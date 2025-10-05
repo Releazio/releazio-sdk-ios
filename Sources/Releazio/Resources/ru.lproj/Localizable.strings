@@ -1,0 +1,11 @@
+/* Releazio SDK Localization - Russian */
+
+"update.title" = "Доступно обновление";
+"update.message" = "Доступна новая версия приложения. Обновите приложение, чтобы продолжить.";
+"update.button.update" = "Обновить";
+"update.button.skip" = "Пропустить";
+"update.button.close" = "Закрыть";
+"update.badge.new" = "Новое";
+"update.whats.new" = "Что нового";
+"update.skip.remaining" = "Осталось пропусков: %d";
+
