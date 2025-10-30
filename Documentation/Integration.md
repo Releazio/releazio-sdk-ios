@@ -561,7 +561,6 @@ ReleazioUpdatePromptView(
 ReleazioUpdatePromptView(
     updateState: updateState,
     style: .olimp,
-    locale: "ru",
     onUpdate: {
         Releazio.shared.openAppStore(updateState: updateState)
     }
@@ -634,7 +633,6 @@ Display changelog with WebView:
 ```swift
 let viewController = ReleazioUpdatePromptViewController(
     updateState: updateState,
-    locale: "ru",
     onUpdate: {
         Releazio.shared.openAppStore(updateState: updateState)
     },
@@ -700,8 +698,7 @@ Or pass to UI components:
 
 ```swift
 VersionView(
-    updateState: updateState,
-    locale: "ru"
+    updateState: updateState
 )
 ```
 

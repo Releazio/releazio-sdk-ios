@@ -133,11 +133,16 @@ public struct ChangelogView: View {
 
     private var changelogContentView: some View {
         VStack(alignment: .leading, spacing: 16) {
-            if let url = postURL {
-                WebView(url: url, isLoading: $isLoading)
+            if let urlString = postURL {
+                #if canImport(UIKit)
+                WebView(url: urlString, isLoading: $isLoading)
                     .frame(minWidth: 300, minHeight: 400)
                     .cornerRadius(12)
                     .background(Color.gray.opacity(0.1))
+                #else
+                Text("WebView not available on this platform")
+                    .foregroundColor(.secondary)
+                #endif
             } else {
                 VStack {
                     ProgressView("Loading URL...")
@@ -163,12 +168,19 @@ public struct ChangelogView: View {
             return
         }
         
+        #if canImport(UIKit)
         if UIApplication.shared.canOpenURL(url) {
             UIApplication.shared.open(url)
             print("🌐 Opening URL in browser: \(urlString)")
         } else {
             print("❌ Cannot open URL: \(urlString)")
         }
+        #elseif os(macOS)
+        NSWorkspace.shared.open(url)
+        print("🌐 Opening URL in browser: \(urlString)")
+        #else
+        print("❌ Cannot open URL on this platform: \(urlString)")
+        #endif
     }
 
     private func categorySection(_ category: ChangelogCategory) -> some View {
@@ -318,6 +330,103 @@ public struct ChangelogView: View {
             return theme.subtitleColor
         }
     }
+    
+    // MARK: - WebView
+    
+    #if canImport(UIKit)
+    private struct WebView: UIViewRepresentable {
+        let url: String
+        @Binding var isLoading: Bool
+        
+        func makeUIView(context: Context) -> WKWebView {
+            let webView = WKWebView()
+            webView.navigationDelegate = context.coordinator
+            #if os(iOS)
+            webView.allowsBackForwardNavigationGestures = true
+            webView.scrollView.isScrollEnabled = true
+            #endif
+            print("🌐 WebView created")
+            return webView
+        }
+        
+        func updateUIView(_ webView: WKWebView, context: Context) {
+            print("🌐 WebView updateUIView called with URL: \(url)")
+            guard let url = URL(string: url) else { 
+                print("❌ Invalid URL: \(url)")
+                return 
+            }
+            
+            // Загружаем URL только если он отличается от текущего
+            if webView.url?.absoluteString != url.absoluteString {
+                print("🌐 WebView loading new URL: \(url)")
+                let request = URLRequest(url: url)
+                webView.load(request)
+            } else {
+                print("🌐 WebView URL already loaded: \(url)")
+            }
+        }
+        
+        func makeCoordinator() -> Coordinator {
+            Coordinator(isLoading: $isLoading)
+        }
+        
+        class Coordinator: NSObject, WKNavigationDelegate {
+            @Binding var isLoading: Bool
+            private var loadingTimer: Timer?
+            
+            init(isLoading: Binding<Bool>) {
+                self._isLoading = isLoading
+            }
+            
+            func webView(_ webView: WKWebView, didStartProvisionalNavigation navigation: WKNavigation!) {
+                print("🌐 WebView started loading")
+                isLoading = true
+                
+                // Таймаут на 15 секунд
+                loadingTimer?.invalidate()
+                loadingTimer = Timer.scheduledTimer(withTimeInterval: 15.0, repeats: false) { _ in
+                    print("⏰ WebView loading timeout")
+                    DispatchQueue.main.async {
+                        self.isLoading = false
+                    }
+                }
+            }
+            
+            func webView(_ webView: WKWebView, didCommit navigation: WKNavigation!) {
+                print("🌐 WebView did commit navigation")
+                // Дополнительная проверка через 2 секунды
+                DispatchQueue.main.asyncAfter(deadline: .now() + 2.0) {
+                    if !webView.isLoading {
+                        print("✅ WebView content loaded (didCommit)")
+                        self.loadingTimer?.invalidate()
+                        self.isLoading = false
+                    }
+                }
+            }
+            
+            func webView(_ webView: WKWebView, didFinish navigation: WKNavigation!) {
+                print("✅ WebView finished loading")
+                print("🌐 WebView current URL: \(webView.url?.absoluteString ?? "nil")")
+                print("🌐 WebView canGoBack: \(webView.canGoBack)")
+                print("🌐 WebView canGoForward: \(webView.canGoForward)")
+                loadingTimer?.invalidate()
+                isLoading = false
+            }
+            
+            func webView(_ webView: WKWebView, didFail navigation: WKNavigation!, withError error: Error) {
+                print("❌ WebView failed to load: \(error)")
+                loadingTimer?.invalidate()
+                isLoading = false
+            }
+            
+            func webView(_ webView: WKWebView, didFailProvisionalNavigation navigation: WKNavigation!, withError error: Error) {
+                print("❌ WebView failed provisional navigation: \(error)")
+                loadingTimer?.invalidate()
+                isLoading = false
+            }
+        }
+    }
+    #endif
 }
 
 // MARK: - Changelog Theme
@@ -407,103 +516,6 @@ public struct ChangelogTheme {
         )
     }
 }
-
-// MARK: - WebView
-
-#if canImport(UIKit)
-struct WebView: UIViewRepresentable {
-    let url: String
-    @Binding var isLoading: Bool
-    
-    func makeUIView(context: Context) -> WKWebView {
-        let webView = WKWebView()
-        webView.navigationDelegate = context.coordinator
-        #if os(iOS)
-        webView.allowsBackForwardNavigationGestures = true
-        webView.scrollView.isScrollEnabled = true
-        #endif
-        print("🌐 WebView created")
-        return webView
-    }
-    
-    func updateUIView(_ webView: WKWebView, context: Context) {
-        print("🌐 WebView updateUIView called with URL: \(url)")
-        guard let url = URL(string: url) else { 
-            print("❌ Invalid URL: \(url)")
-            return 
-        }
-        
-        // Загружаем URL только если он отличается от текущего
-        if webView.url?.absoluteString != url.absoluteString {
-            print("🌐 WebView loading new URL: \(url)")
-            let request = URLRequest(url: url)
-            webView.load(request)
-        } else {
-            print("🌐 WebView URL already loaded: \(url)")
-        }
-    }
-    
-    func makeCoordinator() -> Coordinator {
-        Coordinator(isLoading: $isLoading)
-    }
-    
-    class Coordinator: NSObject, WKNavigationDelegate {
-        @Binding var isLoading: Bool
-        private var loadingTimer: Timer?
-        
-        init(isLoading: Binding<Bool>) {
-            self._isLoading = isLoading
-        }
-        
-        func webView(_ webView: WKWebView, didStartProvisionalNavigation navigation: WKNavigation!) {
-            print("🌐 WebView started loading")
-            isLoading = true
-            
-            // Таймаут на 15 секунд
-            loadingTimer?.invalidate()
-            loadingTimer = Timer.scheduledTimer(withTimeInterval: 15.0, repeats: false) { _ in
-                print("⏰ WebView loading timeout")
-                DispatchQueue.main.async {
-                    self.isLoading = false
-                }
-            }
-        }
-        
-        func webView(_ webView: WKWebView, didCommit navigation: WKNavigation!) {
-            print("🌐 WebView did commit navigation")
-            // Дополнительная проверка через 2 секунды
-            DispatchQueue.main.asyncAfter(deadline: .now() + 2.0) {
-                if !webView.isLoading {
-                    print("✅ WebView content loaded (didCommit)")
-                    self.loadingTimer?.invalidate()
-                    self.isLoading = false
-                }
-            }
-        }
-        
-        func webView(_ webView: WKWebView, didFinish navigation: WKNavigation!) {
-            print("✅ WebView finished loading")
-            print("🌐 WebView current URL: \(webView.url?.absoluteString ?? "nil")")
-            print("🌐 WebView canGoBack: \(webView.canGoBack)")
-            print("🌐 WebView canGoForward: \(webView.canGoForward)")
-            loadingTimer?.invalidate()
-            isLoading = false
-        }
-        
-        func webView(_ webView: WKWebView, didFail navigation: WKNavigation!, withError error: Error) {
-            print("❌ WebView failed to load: \(error)")
-            loadingTimer?.invalidate()
-            isLoading = false
-        }
-        
-        func webView(_ webView: WKWebView, didFailProvisionalNavigation navigation: WKNavigation!, withError error: Error) {
-            print("❌ WebView failed provisional navigation: \(error)")
-            loadingTimer?.invalidate()
-            isLoading = false
-        }
-    }
-}
-#endif
 
 // MARK: - Preview
 

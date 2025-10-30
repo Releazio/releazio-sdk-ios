@@ -125,7 +125,11 @@ public struct VersionView: View {
     
     private var versionBackgroundColor: Color {
         if let customColor = customColors?.versionBackgroundColor {
+            #if canImport(UIKit)
             return Color(customColor)
+            #else
+            return customColor
+            #endif
         }
         switch colorScheme {
         case .dark:
@@ -137,7 +141,11 @@ public struct VersionView: View {
     
     private var textColor: Color {
         if let customColor = customColors?.versionTextColor {
+            #if canImport(UIKit)
             return Color(customColor)
+            #else
+            return customColor
+            #endif
         }
         switch colorScheme {
         case .dark:
@@ -149,7 +157,11 @@ public struct VersionView: View {
     
     private var updateButtonColor: Color {
         if let customColor = customColors?.updateButtonColor {
+            #if canImport(UIKit)
             return Color(customColor)
+            #else
+            return customColor
+            #endif
         }
         // Default Olimp yellow
         return Color(red: 1.0, green: 0.84, blue: 0.0)
@@ -157,7 +169,11 @@ public struct VersionView: View {
     
     private var updateButtonTextColor: Color {
         if let customColor = customColors?.updateButtonTextColor {
+            #if canImport(UIKit)
             return Color(customColor)
+            #else
+            return customColor
+            #endif
         }
         // Default black text on yellow button
         return .black

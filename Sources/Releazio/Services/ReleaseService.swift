@@ -362,7 +362,7 @@ public struct UpdateInfo {
     /// Update message for display
     public var updateMessage: String? {
         guard hasUpdate,
-              let release = latestRelease else { return nil }
+              let _ = latestRelease else { return nil }
 
         if isMandatory {
             return "A mandatory update is required. Please update to continue using the app."

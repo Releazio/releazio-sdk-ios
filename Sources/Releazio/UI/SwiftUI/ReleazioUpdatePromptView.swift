@@ -7,7 +7,7 @@
 
 import SwiftUI
 
-/// SwiftUI view for Releazio update prompt (according to TZ)
+/// SwiftUI view for Releazio update prompt
 /// Supports update types 2 (popup) and 3 (popup force)
 /// Supports two styles: Olimp and Native iOS Alert
 public struct ReleazioUpdatePromptView: View {
@@ -298,21 +298,33 @@ public struct ReleazioUpdatePromptView: View {
     
     private var updateButtonColor: Color {
         if let customColor = customColors?.updateButtonColor {
+            #if canImport(UIKit)
             return Color(customColor)
+            #else
+            return customColor
+            #endif
         }
         return theme.primaryButtonColor
     }
     
     private var updateButtonTextColor: Color {
         if let customColor = customColors?.updateButtonTextColor {
+            #if canImport(UIKit)
             return Color(customColor)
+            #else
+            return customColor
+            #endif
         }
         return theme.primaryButtonTextColor
     }
     
     private var linkColor: Color {
         if let customColor = customColors?.linkColor {
+            #if canImport(UIKit)
             return Color(customColor)
+            #else
+            return customColor
+            #endif
         }
         return theme.linkColor
     }

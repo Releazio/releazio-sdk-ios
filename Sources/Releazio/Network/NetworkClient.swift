@@ -99,7 +99,7 @@ public class NetworkClient: NetworkClientProtocol {
             var response: URLResponse?
 
             // Try to extract data and response from the error if possible
-            if let urlError = error as? URLError {
+            if error is URLError {
                 data = nil
                 response = nil
             }

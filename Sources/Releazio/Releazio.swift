@@ -56,7 +56,7 @@ public class Releazio {
     /// - Throws: ReleazioError if configuration is missing or network request fails
     @available(*, deprecated, message: "Use checkUpdates() instead. This method only returns a boolean and doesn't provide full update state information.")
     public func checkForUpdates() async throws -> Bool {
-        guard let configuration = configuration else {
+        guard configuration != nil else {
             throw ReleazioError.configurationMissing
         }
 
@@ -82,7 +82,7 @@ public class Releazio {
     /// - Throws: ReleazioError if configuration is missing or network request fails
     @available(*, deprecated, message: "This method is deprecated. Use checkUpdates() to get update state with full channel data.")
     public func getReleases() async throws -> [Release] {
-        guard let configuration = configuration else {
+        guard configuration != nil else {
             throw ReleazioError.configurationMissing
         }
 
@@ -93,7 +93,7 @@ public class Releazio {
     /// - Returns: Configuration response
     /// - Throws: ReleazioError
     public func getConfig() async throws -> ConfigResponse {
-        guard let configuration = configuration else {
+        guard configuration != nil else {
             throw ReleazioError.configurationMissing
         }
         return try await releaseService.getConfig()
@@ -104,7 +104,7 @@ public class Releazio {
     /// - Throws: ReleazioError if configuration is missing or network request fails
     @available(*, deprecated, message: "Use checkUpdates() instead. This method doesn't provide update type and state information needed for proper update handling.")
     public func getLatestRelease() async throws -> Release? {
-        guard let configuration = configuration else {
+        guard configuration != nil else {
             throw ReleazioError.configurationMissing
         }
 
@@ -116,7 +116,7 @@ public class Releazio {
     /// - Returns: Changelog object
     /// - Throws: ReleazioError if configuration is missing or network request fails
     public func getChangelog(for releaseId: String) async throws -> Changelog {
-        guard let configuration = configuration else {
+        guard configuration != nil else {
             throw ReleazioError.configurationMissing
         }
 
@@ -126,7 +126,7 @@ public class Releazio {
     }
     
     /// Check for updates and return update state
-    /// This is the main method for checking updates according to TZ
+    /// This is the main method for checking updates
     /// - Returns: UpdateState with all information about whether to show badges, popups, buttons
     /// - Throws: ReleazioError if configuration is missing or network request fails
     public func checkUpdates() async throws -> UpdateState {

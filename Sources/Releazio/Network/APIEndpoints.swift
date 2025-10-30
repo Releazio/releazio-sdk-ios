@@ -28,10 +28,6 @@ public enum APIEndpoints {
 
 public enum HTTPMethod: String {
     case GET = "GET"
-    case POST = "POST"
-    case PUT = "PUT"
-    case PATCH = "PATCH"
-    case DELETE = "DELETE"
 }
 
 // MARK: - Request Builder
@@ -82,59 +78,4 @@ extension APIRequest {
         )
     }
 
-    /// Create POST request
-    /// - Parameters:
-    ///   - url: URL
-    ///   - body: Request body
-    ///   - headers: Additional headers
-    ///   - timeout: Request timeout
-    /// - Returns: APIRequest
-    public static func post<T: Encodable>(
-        url: URL,
-        body: T,
-        headers: [String: String] = [:],
-        timeout: TimeInterval = 30
-    ) throws -> APIRequest {
-        let encoder = JSONEncoder()
-        encoder.dateEncodingStrategy = .iso8601
-        let data = try encoder.encode(body)
-
-        var finalHeaders = headers
-        finalHeaders["Content-Type"] = "application/json"
-
-        return APIRequest(
-            url: url,
-            method: .POST,
-            headers: finalHeaders,
-            body: data,
-            timeout: timeout
-        )
-    }
-
-    /// Create POST request with raw data
-    /// - Parameters:
-    ///   - url: URL
-    ///   - data: Raw data
-    ///   - contentType: Content type header
-    ///   - headers: Additional headers
-    ///   - timeout: Request timeout
-    /// - Returns: APIRequest
-    public static func post(
-        url: URL,
-        data: Data,
-        contentType: String = "application/json",
-        headers: [String: String] = [:],
-        timeout: TimeInterval = 30
-    ) -> APIRequest {
-        var finalHeaders = headers
-        finalHeaders["Content-Type"] = contentType
-
-        return APIRequest(
-            url: url,
-            method: .POST,
-            headers: finalHeaders,
-            body: data,
-            timeout: timeout
-        )
-    }
 }

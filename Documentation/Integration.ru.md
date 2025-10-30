@@ -382,7 +382,6 @@ struct ContentView: View {
             if let state = updateState {
                 VersionView(
                     updateState: state,
-                    locale: "ru",
                     onUpdateTap: {
                         Releazio.shared.openAppStore(updateState: state)
                     }
@@ -397,7 +396,6 @@ struct ContentView: View {
                 ReleazioUpdatePromptView(
                     updateState: state,
                     style: .native,
-                    locale: "ru",
                     onUpdate: {
                         Releazio.shared.openAppStore(updateState: state)
                         showUpdatePopup = false
@@ -490,8 +488,7 @@ class ViewController: UIViewController {
         
         // Показать компонент версии
         let versionView = VersionUIKitView(
-            updateState: state,
-            locale: "ru"
+            updateState: state
         )
         versionView.onUpdateTap = {
             Releazio.shared.openAppStore(updateState: state)
@@ -502,7 +499,6 @@ class ViewController: UIViewController {
     private func showUpdatePopup(state: UpdateState) {
         let viewController = ReleazioUpdatePromptViewController(
             updateState: state,
-            locale: "ru",
             onUpdate: {
                 Releazio.shared.openAppStore(updateState: state)
                 self.dismiss(animated: true)
@@ -565,7 +561,6 @@ class ViewController: UIViewController {
 ReleazioUpdatePromptView(
     updateState: updateState,
     style: .olimp,
-    locale: "ru",
     onUpdate: {
         Releazio.shared.openAppStore(updateState: updateState)
     }
@@ -703,8 +698,7 @@ let configuration = ReleazioConfiguration(
 
 ```swift
 VersionView(
-    updateState: updateState,
-    locale: "ru"
+    updateState: updateState
 )
 ```
 
