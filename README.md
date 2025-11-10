@@ -28,13 +28,13 @@
 
 **Добавьте в Xcode:**
 1. File → Add Package Dependencies
-2. Вставьте URL: `https://github.com/swift2geek/releazio-ios-sdk`
+2. Вставьте URL: `https://github.com/Releazio/releazio-sdk-ios`
 3. Выберите версию и добавьте в проект
 
 **Или в Package.swift:**
 ```swift
 dependencies: [
-    .package(url: "https://github.com/swift2geek/releazio-ios-sdk", from: "1.0.0")
+    .package(url: "https://github.com/Releazio/releazio-sdk-ios", from: "1.0.0")
 ]
 ```
 
@@ -434,7 +434,7 @@ do {
 ## 🤝 Поддержка
 
 - 📧 Email: support@releazio.com
-- 🐛 Issues: [GitHub Issues](https://github.com/swift2geek/releazio-ios-sdk/issues)
+- 🐛 Issues: [GitHub Issues](https://github.com/Releazio/releazio-sdk-ios/issues)
 - 📖 Документация: [Releazio Docs](https://releazio.com/docs)
 
 ## 📄 Лицензия

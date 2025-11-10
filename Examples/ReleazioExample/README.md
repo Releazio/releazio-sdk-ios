@@ -325,7 +325,7 @@ ReleazioConfiguration(
 ## 🤝 Поддержка
 
 - 📖 [Документация SDK](../README.md)
-- 🐛 [GitHub Issues](https://github.com/swift2geek/releazio-ios-sdk/issues)
+- 🐛 [GitHub Issues](https://github.com/Releazio/releazio-sdk-ios/issues)
 - 📧 Email: support@releazio.com
 
 ## 📄 Лицензия

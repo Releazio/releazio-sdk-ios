@@ -24,7 +24,7 @@
 1. В Xcode перейдите в **File → Add Package Dependencies**
 2. Введите URL репозитория:
    ```
-   https://github.com/swift2geek/releazio-ios-sdk
+   https://github.com/Releazio/releazio-sdk-ios
    ```
 3. Выберите диапазон версий или конкретную версию
 4. Добавьте в ваш app target
@@ -34,7 +34,7 @@
 
 ```swift
 dependencies: [
-    .package(url: "https://github.com/swift2geek/releazio-ios-sdk", from: "1.0.0")
+    .package(url: "https://github.com/Releazio/releazio-sdk-ios", from: "1.0.0")
 ]
 ```
 
@@ -920,7 +920,7 @@ Releazio.configure(with: config)
 - 📖 [Справочник API](API.ru.md) — Полная документация API
 - 📖 [README](../README.md) — Основная документация SDK
 - 💻 [Примеры](../Examples/) — Рабочие примеры кода
-- 🐛 [GitHub Issues](https://github.com/swift2geek/releazio-ios-sdk/issues)
+- 🐛 [GitHub Issues](https://github.com/Releazio/releazio-sdk-ios/issues)
 - 📧 support@releazio.com
 
 ---

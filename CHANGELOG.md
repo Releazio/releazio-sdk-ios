@@ -150,7 +150,7 @@ No migration required - this is the first stable release.
 
 For questions, issues, or feature requests, please:
 - 📖 Check our [Documentation](https://releazio.com/docs)
-- 🐛 [Report Issues](https://github.com/swift2geek/releazio-ios-sdk/issues)
+- 🐛 [Report Issues](https://github.com/Releazio/releazio-sdk-ios/issues)
 - 📧 Contact [Support](mailto:support@releazio.com)
 - 💬 Join our [Discord Community](https://discord.gg/releazio)
 

@@ -24,7 +24,7 @@ Complete step-by-step guide for integrating Releazio iOS SDK into your applicati
 1. In Xcode, go to **File → Add Package Dependencies**
 2. Enter the repository URL:
    ```
-   https://github.com/swift2geek/releazio-ios-sdk
+   https://github.com/Releazio/releazio-sdk-ios
    ```
 3. Select version range or specific version
 4. Add to your app target
@@ -34,7 +34,7 @@ Alternatively, add to `Package.swift`:
 
 ```swift
 dependencies: [
-    .package(url: "https://github.com/swift2geek/releazio-ios-sdk", from: "1.0.0")
+    .package(url: "https://github.com/Releazio/releazio-sdk-ios", from: "1.0.0")
 ]
 ```
 
@@ -920,7 +920,7 @@ Debug logs will show:
 - 📖 [API Reference](API.md) — Complete API documentation
 - 📖 [README](../README.md) — Main SDK documentation
 - 💻 [Examples](../Examples/) — Working code examples
-- 🐛 [GitHub Issues](https://github.com/swift2geek/releazio-ios-sdk/issues)
+- 🐛 [GitHub Issues](https://github.com/Releazio/releazio-sdk-ios/issues)
 - 📧 support@releazio.com
 
 ---
