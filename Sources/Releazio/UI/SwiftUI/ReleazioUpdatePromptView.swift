@@ -125,8 +125,9 @@ public struct ReleazioUpdatePromptView: View {
                             Button(action: {
                                 onInfoTap?()
                             }) {
-                                Image(systemName: "questionmark.circle.fill")
-                                    .font(.system(size: 20))
+                                Image(systemName: "questionmark.circle")
+                                    .foregroundColor(theme.closeButtonColor)
+                                    .font(.system(size: 20, weight: .medium))
                                     .frame(width: 24, height: 24)
                             }
                         }
