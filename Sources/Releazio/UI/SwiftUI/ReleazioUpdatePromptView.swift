@@ -243,10 +243,10 @@ public struct ReleazioUpdatePromptView: View {
             Spacer()
             
             VStack(alignment: .center, spacing: 20) {
-                // Icon placeholder (можно заменить на свою иконку)
-                Image("rocket")
-                    .font(.system(size: 80))
-                    .foregroundColor(theme.textColor.opacity(0.8))
+                Image("rocket", bundle: .module)
+                    .resizable()
+                    .scaledToFit()
+                    .frame(maxWidth: 300, maxHeight: 300)
                 
                 Text(updateTitle)
                     .font(.system(size: 20, weight: .bold))
@@ -257,6 +257,7 @@ public struct ReleazioUpdatePromptView: View {
                 Text(updateState.channelData.updateMessage.isEmpty ? updateMessage : updateState.channelData.updateMessage)
                     .font(.system(size: 16, weight: .semibold))
                     .foregroundColor(theme.secondaryTextColor)
+                    .frame(maxWidth: 400)
                     .multilineTextAlignment(.center)
                     .padding(.horizontal, 20)
                     .padding(.bottom, 24)
@@ -271,7 +272,7 @@ public struct ReleazioUpdatePromptView: View {
                     Text(updateButtonText)
                         .font(.system(size: 18, weight: .semibold))
                         .foregroundColor(updateButtonTextColor)
-                        .frame(maxWidth: .infinity)
+                        .frame(maxWidth: 300)
                         .frame(height: 56)
                         .background(updateButtonColor)
                         .cornerRadius(14)
@@ -289,7 +290,7 @@ public struct ReleazioUpdatePromptView: View {
                         Text(skipButtonText + " (\(remainingSkipAttempts))")
                             .font(.system(size: 16, weight: .medium))
                             .foregroundColor(theme.textColor.opacity(0.6))
-                            .frame(maxWidth: .infinity)
+                            .frame(maxWidth: 300)
                             .frame(height: 44)
                     }
                 }
