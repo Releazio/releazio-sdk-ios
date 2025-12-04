@@ -53,7 +53,7 @@ public class ReleazioUpdatePromptViewController: UIViewController {
     
     private lazy var containerView: UIView = {
         let view = UIView()
-        view.backgroundColor = .systemBackground
+        view.backgroundColor = .white
         view.layer.cornerRadius = 16
         view.layer.shadowColor = UIColor.black.cgColor
         view.layer.shadowRadius = 10
@@ -82,7 +82,7 @@ public class ReleazioUpdatePromptViewController: UIViewController {
     private lazy var titleLabel: UILabel = {
         let label = UILabel()
         label.font = .systemFont(ofSize: 20, weight: .bold)
-        label.textColor = .label
+        label.textColor = .black
         label.textAlignment = .center
         label.translatesAutoresizingMaskIntoConstraints = false
         // Will be set in setupUI after initialization
@@ -91,15 +91,15 @@ public class ReleazioUpdatePromptViewController: UIViewController {
     
     private lazy var infoButton: UIButton = {
         let button = UIButton(type: .system)
-        button.setImage(UIImage(systemName: "questionmark.circle.fill"), for: .normal)
-        button.tintColor = .black
+        button.setImage(UIImage(systemName: "questionmark.circle"), for: .normal)
+        button.tintColor = .systemGray
         button.addTarget(self, action: #selector(infoTapped), for: .touchUpInside)
         return button
     }()
     
     private lazy var closeButton: UIButton = {
         let button = UIButton(type: .system)
-        button.setImage(UIImage(systemName: "xmark.circle.fill"), for: .normal)
+        button.setImage(UIImage(systemName: "xmark"), for: .normal)
         button.tintColor = .systemGray
         button.addTarget(self, action: #selector(closeTapped), for: .touchUpInside)
         return button
@@ -108,7 +108,7 @@ public class ReleazioUpdatePromptViewController: UIViewController {
     private lazy var messageLabel: UILabel = {
         let label = UILabel()
         label.font = .systemFont(ofSize: 16)
-        label.textColor = .secondaryLabel
+        label.textColor = .systemGray
         label.numberOfLines = 0
         label.textAlignment = .center
         // Will be set in setupUI after initialization
