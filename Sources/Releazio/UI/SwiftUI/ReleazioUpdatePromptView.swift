@@ -101,6 +101,7 @@ public struct ReleazioUpdatePromptView: View {
             // Background overlay
             theme.overlayColor
                 .ignoresSafeArea()
+                .allowsHitTesting(updateState.updateType == 2)  // Block taps for type 3
                 .onTapGesture {
                     if updateState.updateType == 2 {
                         onClose?()
@@ -110,22 +111,38 @@ public struct ReleazioUpdatePromptView: View {
             // Modal card
             VStack(spacing: 0) {
                 // Header
-                HStack {
+                ZStack {
+                    // Title (always centered)
                     Text(updateTitle)
                         .font(.system(size: 20, weight: .bold))
                         .foregroundColor(theme.textColor)
+                        .frame(maxWidth: .infinity, alignment: .center)
                     
-                    Spacer()
-                    
-                    // Close button (only for type 2)
-                    if updateState.updateType == 2 {
-                        Button(action: {
-                            onClose?()
-                        }) {
-                            Image(systemName: "xmark")
-                                .font(.system(size: 16, weight: .medium))
-                                .foregroundColor(theme.closeButtonColor)
-                                .frame(width: 24, height: 24)
+                    // Buttons overlay
+                    HStack {
+                        // Info button (left)
+                        if updateState.channelData.postUrl != nil {
+                            Button(action: {
+                                onInfoTap?()
+                            }) {
+                                Image(systemName: "questionmark.circle.fill")
+                                    .font(.system(size: 20))
+                                    .frame(width: 24, height: 24)
+                            }
+                        }
+                        
+                        Spacer()
+                        
+                        // Close button (right, only for type 2)
+                        if updateState.updateType == 2 {
+                            Button(action: {
+                                onClose?()
+                            }) {
+                                Image(systemName: "xmark")
+                                    .font(.system(size: 16, weight: .medium))
+                                    .foregroundColor(theme.closeButtonColor)
+                                    .frame(width: 24, height: 24)
+                            }
                         }
                     }
                 }
@@ -135,20 +152,11 @@ public struct ReleazioUpdatePromptView: View {
                 
                 // Message
                 Text(updateState.channelData.updateMessage.isEmpty ? updateMessage : updateState.channelData.updateMessage)
-                    .font(.system(size: 16))
+                    .font(.system(size: 16, weight: .semibold))
                     .foregroundColor(theme.secondaryTextColor)
                     .multilineTextAlignment(.center)
                     .padding(.horizontal, 20)
                     .padding(.bottom, 24)
-                
-                // Skip attempts (for type 3)
-                if updateState.updateType == 3 && remainingSkipAttempts > 0 {
-                    Text(skipRemainingText)
-                        .font(.system(size: 14, weight: .medium))
-                        .foregroundColor(.orange)
-                        .padding(.horizontal, 20)
-                        .padding(.bottom, 16)
-                }
                 
                 // Update button
                 Button(action: {
@@ -163,25 +171,35 @@ public struct ReleazioUpdatePromptView: View {
                         .cornerRadius(12)
                 }
                 .padding(.horizontal, 20)
-                .padding(.bottom, 12)
+                .padding(.bottom, updateState.updateType == 3 && remainingSkipAttempts > 0 ? 12 : 20)
                 
-                // "Что нового" link (if post_url exists)
-                if updateState.channelData.postUrl != nil {
+                // Skip button (for type 3)
+                if updateState.updateType == 3 && remainingSkipAttempts > 0 {
                     Button(action: {
-                        onInfoTap?()
+                        let newRemaining = remainingSkipAttempts - 1
+                        remainingSkipAttempts = newRemaining
+                        onSkip?(newRemaining)
+                        // "Skip" means close the popup
+                        onClose?()
                     }) {
-                        Text(whatsNewText)
-                            .font(.system(size: 16))
-                            .foregroundColor(linkColor)
-                            .padding(.bottom, 20)
+                        Text(skipButtonText + " (\(remainingSkipAttempts))")
+                            .font(.system(size: 16, weight: .medium))
+                            .foregroundColor(theme.secondaryTextColor)
+                            .frame(maxWidth: .infinity)
+                            .frame(height: 44)
+                            .cornerRadius(12)
                     }
+                    .padding(.horizontal, 20)
+                    .padding(.bottom, 20)
                 }
             }
             .background(theme.backgroundColor)
             .cornerRadius(16)
             .shadow(color: Color.black.opacity(0.2), radius: 10, x: 0, y: 5)
             .padding(20)
+            .frame(maxWidth: 500)  // Max 500pt on large screens (iPad)
         }
+        .frame(maxWidth: .infinity)  // Allow centering
     }
     
     // MARK: - InAppUpdate Style (Full Screen)
@@ -240,23 +258,46 @@ public struct ReleazioUpdatePromptView: View {
             .background(theme.headerBackgroundColor)
             
             // Content area
-            ScrollView {
-                VStack(alignment: .leading, spacing: 16) {
-                    // Message
-                    Text(updateState.channelData.updateMessage.isEmpty ? updateMessage : updateState.channelData.updateMessage)
-                        .font(.system(size: 16))
-                        .foregroundColor(theme.textColor)
-                        .lineSpacing(4)
-                    
-                    // Skip attempts (for type 3)
-                    if updateState.updateType == 3 && remainingSkipAttempts > 0 {
-                        Text(skipRemainingText)
-                            .font(.system(size: 14, weight: .medium))
-                            .foregroundColor(.orange)
-                            .padding(.top, 8)
+            VStack(spacing: 0) {
+                ScrollView {
+                    VStack(alignment: .leading, spacing: 16) {
+                        // Message
+                        Text(updateState.channelData.updateMessage.isEmpty ? updateMessage : updateState.channelData.updateMessage)
+                            .font(.system(size: 16))
+                            .foregroundColor(theme.textColor)
+                            .lineSpacing(4)
+                        
+                        // Skip attempts (for type 3)
+                        if updateState.updateType == 3 && remainingSkipAttempts > 0 {
+                            Text(skipRemainingText)
+                                .font(.system(size: 14, weight: .medium))
+                                .foregroundColor(.orange)
+                                .padding(.top, 8)
+                        }
                     }
+                    .padding(20)
                 }
-                .padding(20)
+                
+                // Skip button (for type 3)
+                if updateState.updateType == 3 && remainingSkipAttempts > 0 {
+                    Button(action: {
+                        let newRemaining = remainingSkipAttempts - 1
+                        remainingSkipAttempts = newRemaining
+                        onSkip?(newRemaining)
+                        // "Skip" means close the popup
+                        onClose?()
+                    }) {
+                        Text(skipButtonText)
+                            .font(.system(size: 16, weight: .medium))
+                            .foregroundColor(.secondary)
+                            .frame(maxWidth: .infinity)
+                            .frame(height: 50)
+                            .background(Color(UIColor.systemGray5))
+                            .cornerRadius(12)
+                    }
+                    .padding(.horizontal, 20)
+                    .padding(.vertical, 16)
+                }
             }
             .background(theme.backgroundColor)
         }

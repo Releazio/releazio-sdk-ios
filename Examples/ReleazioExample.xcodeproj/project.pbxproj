@@ -101,7 +101,6 @@
 			mainGroup = D295518B2E92F7E000A419CB;
 			minimizedProjectReferenceProxies = 1;
 			packageReferences = (
-				D24BB9252E9AAC1C00F74748 /* XCLocalSwiftPackageReference "../../releazio-ios-sdk" */,
 			);
 			preferredProjectObjectVersion = 77;
 			productRefGroup = D29551952E92F7E000A419CB /* Products */;
@@ -343,13 +342,6 @@
 			defaultConfigurationName = Release;
 		};
 /* End XCConfigurationList section */
-
-/* Begin XCLocalSwiftPackageReference section */
-		D24BB9252E9AAC1C00F74748 /* XCLocalSwiftPackageReference "../../releazio-ios-sdk" */ = {
-			isa = XCLocalSwiftPackageReference;
-			relativePath = "../../releazio-ios-sdk";
-		};
-/* End XCLocalSwiftPackageReference section */
 
 /* Begin XCSwiftPackageProductDependency section */
 		D24BB9262E9AAC1C00F74748 /* Releazio */ = {
