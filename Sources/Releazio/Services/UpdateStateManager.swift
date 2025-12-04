@@ -208,9 +208,6 @@ public class UpdateStateManager {
     }
     
     private func getBadgeURL(channelData: ChannelData) -> String? {
-        guard channelData.updateType == 0 else {
-            return nil
-        }
         
         guard let postURL = channelData.postUrl else {
             return channelData.postsUrl
