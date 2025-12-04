@@ -57,7 +57,7 @@ public struct UpdatePromptTheme {
     public var primaryButtonColor: Color {
         switch style {
         case .inAppUpdate:
-            return Color(red: 1.0, green: 0.84, blue: 0.0) // InAppUpdate yellow
+            return .black
         case .native:
             return .black
         }
@@ -67,7 +67,7 @@ public struct UpdatePromptTheme {
     public var primaryButtonTextColor: Color {
         switch style {
         case .inAppUpdate:
-            return .black
+            return .white
         case .native:
             return .white
         }
@@ -110,14 +110,7 @@ public struct UpdatePromptTheme {
     
     /// Close button color
     public var closeButtonColor: Color {
-        switch (style, colorScheme) {
-        case (.inAppUpdate, _):
-            return .white
-        case (.native, .dark):
-            return .white
-        case (.native, _):
-            return .gray
-        }
+        return .gray
     }
     
     // MARK: - Properties
