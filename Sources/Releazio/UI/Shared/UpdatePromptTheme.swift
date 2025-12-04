@@ -30,16 +30,7 @@ public struct UpdatePromptTheme {
     
     /// Background color
     public var backgroundColor: Color {
-        switch (style, colorScheme) {
-        case (.inAppUpdate, .dark):
-            return Color(red: 0.1, green: 0.1, blue: 0.1)
-        case (.inAppUpdate, _):
-            return .white
-        case (.native, .dark):
-            return Color(white: 0.0)
-        case (.native, _):
-            return Color(white: 1.0)
-        }
+        .white
     }
     
     /// Header background color (for InAppUpdate style)
@@ -68,7 +59,7 @@ public struct UpdatePromptTheme {
         case .inAppUpdate:
             return Color(red: 1.0, green: 0.84, blue: 0.0) // InAppUpdate yellow
         case .native:
-            return .blue
+            return .black
         }
     }
     
@@ -94,12 +85,7 @@ public struct UpdatePromptTheme {
     
     /// Text color
     public var textColor: Color {
-        switch colorScheme {
-        case .dark:
-            return .white
-        default:
-            return .black
-        }
+        .black
     }
     
     /// Secondary text color
