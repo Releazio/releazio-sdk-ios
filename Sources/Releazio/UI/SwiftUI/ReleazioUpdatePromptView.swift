@@ -244,7 +244,7 @@ public struct ReleazioUpdatePromptView: View {
             
             VStack(alignment: .center, spacing: 20) {
                 // Icon placeholder (можно заменить на свою иконку)
-                Image(systemName: "arrow.up.circle.fill")
+                Image("rocket")
                     .font(.system(size: 80))
                     .foregroundColor(theme.textColor.opacity(0.8))
                 
