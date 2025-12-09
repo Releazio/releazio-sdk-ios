@@ -20,6 +20,9 @@ public class VersionUIKitView: UIView {
     /// Update button
     private let updateButton: UIButton
     
+    /// Container view for version info
+    private let versionContainer: UIView
+    
     /// Custom colors for component
     private let customColors: UIComponentColors?
     
@@ -79,6 +82,7 @@ public class VersionUIKitView: UIView {
     ) {
         self.versionLabel = UILabel()
         self.updateButton = UIButton(type: .system)
+        self.versionContainer = UIView()
         self.customColors = customColors
         self.customStrings = customStrings
         // Auto-detect locale from system
@@ -98,26 +102,34 @@ public class VersionUIKitView: UIView {
     // MARK: - Setup
     
     private func setupUI(version: String, isUpdateAvailable: Bool) {
+        // Version container setup
+        versionContainer.backgroundColor = UIColor(white: 0.95, alpha: 1.0)
+        versionContainer.layer.cornerRadius = 22
+        versionContainer.clipsToBounds = true
+        versionContainer.translatesAutoresizingMaskIntoConstraints = false
+        
         // Version label
         let versionText = customStrings?.versionText ?? localization.versionText
         versionLabel.text = "\(versionText) \(version)"
         versionLabel.font = .systemFont(ofSize: 15, weight: .medium)
-        versionLabel.textAlignment = .center
+        versionLabel.textAlignment = .center // Центрируем текст
+        versionLabel.textColor = .black
         versionLabel.translatesAutoresizingMaskIntoConstraints = false
         
-        versionLabel.layer.cornerRadius = 10
-        versionLabel.clipsToBounds = true
-        
-        // Update button
+        // Update button - black style
         let buttonText = customStrings?.updateButtonText ?? localization.updateButtonText
         updateButton.setTitle(buttonText, for: .normal)
         updateButton.titleLabel?.font = .systemFont(ofSize: 15, weight: .semibold)
-        updateButton.layer.cornerRadius = 10
+        updateButton.backgroundColor = .black
+        updateButton.setTitleColor(.white, for: .normal)
+        updateButton.layer.cornerRadius = 22
         updateButton.translatesAutoresizingMaskIntoConstraints = false
         updateButton.isHidden = !isUpdateAvailable
         updateButton.addTarget(self, action: #selector(updateButtonTapped), for: .touchUpInside)
         
-        addSubview(versionLabel)
+        // Add subviews
+        addSubview(versionContainer)
+        versionContainer.addSubview(versionLabel)
         addSubview(updateButton)
         
         updateColors()
@@ -125,30 +137,37 @@ public class VersionUIKitView: UIView {
     
     private func setupConstraints() {
         NSLayoutConstraint.activate([
-            // Version label
-            versionLabel.leadingAnchor.constraint(equalTo: leadingAnchor),
-            versionLabel.topAnchor.constraint(equalTo: topAnchor),
-            versionLabel.bottomAnchor.constraint(equalTo: bottomAnchor),
-            versionLabel.heightAnchor.constraint(equalToConstant: 44),
+            // Version container
+            versionContainer.leadingAnchor.constraint(equalTo: leadingAnchor),
+            versionContainer.topAnchor.constraint(equalTo: topAnchor),
+            versionContainer.bottomAnchor.constraint(equalTo: bottomAnchor),
+            versionContainer.heightAnchor.constraint(equalToConstant: 44),
             
-            // Update button
-            updateButton.leadingAnchor.constraint(equalTo: versionLabel.trailingAnchor, constant: 12),
+            // Version label (inside container)
+            versionLabel.leadingAnchor.constraint(equalTo: versionContainer.leadingAnchor, constant: 16),
+            versionLabel.trailingAnchor.constraint(equalTo: versionContainer.trailingAnchor, constant: -16),
+            versionLabel.centerYAnchor.constraint(equalTo: versionContainer.centerYAnchor),
+            
+            // Update button (black button on the right)
+            updateButton.leadingAnchor.constraint(equalTo: versionContainer.trailingAnchor, constant: 12),
             updateButton.trailingAnchor.constraint(equalTo: trailingAnchor),
-            updateButton.centerYAnchor.constraint(equalTo: versionLabel.centerYAnchor),
-            updateButton.heightAnchor.constraint(equalToConstant: 44)
+            updateButton.centerYAnchor.constraint(equalTo: versionContainer.centerYAnchor),
+            updateButton.heightAnchor.constraint(equalToConstant: 44),
+            
+            versionContainer.widthAnchor.constraint(equalTo: updateButton.widthAnchor)
         ])
     }
     
     private func updateColors() {
-        // Version label background
+        // Version container background
         if let customColor = customColors?.versionBackgroundColor {
-            versionLabel.backgroundColor = customColor
+            versionContainer.backgroundColor = customColor
         } else {
             switch colorScheme {
             case .dark:
-                versionLabel.backgroundColor = UIColor(white: 0.2, alpha: 1.0)
+                versionContainer.backgroundColor = UIColor(white: 0.2, alpha: 1.0)
             default:
-                versionLabel.backgroundColor = UIColor(white: 0.95, alpha: 1.0)
+                versionContainer.backgroundColor = UIColor(white: 0.95, alpha: 1.0)
             }
         }
         
@@ -164,20 +183,18 @@ public class VersionUIKitView: UIView {
             }
         }
         
-        // Update button background
+        // Update button - black background with white text
         if let customColor = customColors?.updateButtonColor {
             updateButton.backgroundColor = customColor
         } else {
-            // Default InAppUpdate yellow
-            updateButton.backgroundColor = UIColor(red: 1.0, green: 0.84, blue: 0.0, alpha: 1.0)
+            updateButton.backgroundColor = .black
         }
         
-        // Update button text color
+        // Update button text color - white
         if let customColor = customColors?.updateButtonTextColor {
             updateButton.setTitleColor(customColor, for: .normal)
         } else {
-            // Default black text on yellow button
-            updateButton.setTitleColor(.black, for: .normal)
+            updateButton.setTitleColor(.white, for: .normal)
         }
     }
     
