@@ -4,51 +4,55 @@
 [![Platform](https://img.shields.io/badge/Platform-iOS%20%7C%20macOS%20%7C%20watchOS%20%7C%20tvOS-blue.svg)](https://developer.apple.com)
 [![License](https://img.shields.io/badge/License-MIT-green.svg)](LICENSE)
 
-**Releazio iOS SDK** — современная библиотека для управления обновлениями приложений в iOS. SDK предоставляет полный набор инструментов для проверки обновлений, отображения changelog и управления различными типами обновлений.
+**Language / Язык:** [English](#) | [Русский](./README.ru.md)
 
-## ✨ Основные возможности
+**Releazio iOS SDK** — a modern library for managing application updates in iOS. The SDK provides a complete set of tools for checking updates, displaying changelog, and managing various types of updates.
 
-- 🚀 **Проверка обновлений** — Автоматическая проверка наличия новых версий через API
-- 🎯 **4 типа обновлений** — Поддержка latest, silent, popup и popup force режимов
-- 📝 **Changelog** — Отображение изменений с поддержкой WebView для постов
-- 🎨 **UI компоненты** — Готовые компоненты для SwiftUI и UIKit
-- 🌍 **Локализация** — Поддержка английского и русского языков
-- 🔔 **Бейджи и уведомления** — Индикаторы новых версий
-- ⚙️ **Гибкая настройка** — Кастомизация цветов, локали и поведения
+## ✨ Key Features
 
-## 📋 Требования
+- 🚀 **Update Checking** — Automatic checking for new versions via API
+- 🎯 **4 Update Types** — Support for latest, silent, popup, and popup force modes
+- 📝 **Changelog** — Display changes with WebView support for posts
+- 🎨 **UI Components** — Ready-made components for SwiftUI and UIKit
+- 🌍 **Localization** — Support for English and Russian languages
+- 🔔 **Badges and Notifications** — Indicators for new versions
+- ⚙️ **Flexible Configuration** — Customization of colors, locale, and behavior
+
+## 📋 Requirements
 
 - iOS 15.0+ / macOS 12.0+ / watchOS 8.0+ / tvOS 15.0+
 - Swift 5.9+
 - Xcode 14.0+
 
-## 📦 Установка
+## 📦 Installation
 
 ### Swift Package Manager
 
-**Добавьте в Xcode:**
+**Add to Xcode:**
 1. File → Add Package Dependencies
-2. Вставьте URL: `https://github.com/Releazio/releazio-sdk-ios`
-3. Выберите версию и добавьте в проект
+2. Paste URL: `https://github.com/Releazio/releazio-sdk-ios`
+3. Select version and add to project
 
-**Или в Package.swift:**
+**Or in Package.swift:**
 ```swift
 dependencies: [
-    .package(url: "https://github.com/Releazio/releazio-sdk-ios", from: "1.0.0")
+    .package(url: "https://github.com/Releazio/releazio-sdk-ios", from: "1.0.5")
 ]
 ```
 
+> **Note:** Using `from: "1.0.5"` means minimum version 1.0.5, while automatically picking up the latest available version in the 1.x.x range (up to the next major version 2.0.0). When updating dependencies in Xcode, the latest version (1.0.6, 1.2.0, 1.5.0, etc.) will be used. You don't need to update the version in README with each release.
+
 <!-- CocoaPods installation is not supported; use Swift Package Manager -->
 
-## 🚀 Быстрый старт
+## 🚀 Quick Start
 
-### 1. Импортируйте SDK
+### 1. Import SDK
 
 ```swift
 import Releazio
 ```
 
-### 2. Настройте SDK
+### 2. Configure SDK
 
 ```swift
 @main
@@ -56,7 +60,7 @@ struct YourApp: App {
     init() {
         let configuration = ReleazioConfiguration(
             apiKey: "your-api-key",
-            locale: "ru", // или "en"
+            locale: "en", // or "ru"
             debugLoggingEnabled: true
         )
         
@@ -71,62 +75,62 @@ struct YourApp: App {
 }
 ```
 
-### 3. Проверьте обновления
+### 3. Check Updates
 
 ```swift
 Task {
     do {
         let updateState = try await Releazio.shared.checkUpdates()
         
-        // Проверьте нужно ли показывать попап
+        // Check if popup should be shown
         if updateState.shouldShowPopup {
-            // Покажите ReleazioUpdatePromptView
+            // Show ReleazioUpdatePromptView
         }
         
-        // Проверьте нужно ли показывать бейдж
+        // Check if badge should be shown
         if updateState.shouldShowBadge {
-            // Покажите BadgeView
+            // Show BadgeView
         }
         
-        // Проверьте нужно ли показывать кнопку обновления
+        // Check if update button should be shown
         if updateState.shouldShowUpdateButton {
-            // Покажите кнопку обновления
+            // Show update button
         }
     } catch {
-        print("Ошибка проверки обновлений: \(error)")
+        print("Update check error: \(error)")
     }
 }
 ```
 
-## 📚 Типы обновлений
+## 📚 Update Types
 
-SDK поддерживает 4 типа обновлений в соответствии с API:
+The SDK supports 4 update types according to the API:
 
-- **Type 0 (latest)** — Показывается бейдж, при клике открывается post_url
-- **Type 1 (silent)** — Только кнопка "Обновить", попап не показывается
-- **Type 2 (popup)** — Закрываемый попап с поддержкой show_interval
-- **Type 3 (popup force)** — Незакрываемый попап с ограниченным количеством пропусков (skip_attempts)
+- **Type 0 (latest)** — Badge is shown, clicking opens post_url
+- **Type 1 (silent)** — Only "Update" button, popup is not shown
+- **Type 2 (popup)** — Closable popup with show_interval support
+- **Type 3 (popup force)** — Non-closable popup with limited skip attempts (skip_attempts)
 
-## 🎨 UI компоненты
+## 🎨 UI Components
 
 ### SwiftUI
 
 #### ReleazioUpdatePromptView
-Попап для обновлений с поддержкой двух стилей: Native iOS Alert и InAppUpdate.
+Update popup with support for two styles: Native iOS Alert and InAppUpdate.
 
 ```swift
 ReleazioUpdatePromptView(
     updateState: updateState,
-    style: .native, // или .inAppUpdate
-    locale: "ru",
+    style: .native, // or .inAppUpdate
+    locale: "en",
     onUpdate: {
         Releazio.shared.openAppStore(updateState: updateState)
     },
     onSkip: { remaining in
-        print("Осталось пропусков: \(remaining)")
+        print("Remaining skips: \(remaining)")
     },
     onClose: {
-        // Закрыть попап
+        // Close popup
     },
     onInfoTap: {
         Releazio.shared.openPostURL(updateState: updateState)
@@ -135,12 +139,12 @@ ReleazioUpdatePromptView(
 ```
 
 #### VersionView
-Компонент для отображения версии приложения с кнопкой обновления.
+Component for displaying app version with update button.
 
 ```swift
 VersionView(
     updateState: updateState,
-    locale: "ru",
+    locale: "en",
     onUpdateTap: {
         Releazio.shared.openAppStore(updateState: updateState)
     }
@@ -148,7 +152,7 @@ VersionView(
 ```
 
 #### BadgeView
-Бейдж-индикатор для новых обновлений.
+Badge indicator for new updates.
 
 ```swift
 BadgeView(
@@ -159,7 +163,7 @@ BadgeView(
 ```
 
 #### ChangelogView
-Отображение changelog с поддержкой WebView для загрузки постов.
+Display changelog with WebView support for loading posts.
 
 ```swift
 ChangelogView(changelog: changelog)
@@ -172,12 +176,12 @@ ChangelogView(changelog: changelog)
 ```swift
 let viewController = ReleazioUpdatePromptViewController(
     updateState: updateState,
-    locale: "ru",
+    style: .native, // or .inAppUpdate
     onUpdate: {
         Releazio.shared.openAppStore(updateState: updateState)
     },
     onSkip: { remaining in
-        print("Осталось пропусков: \(remaining)")
+        print("Remaining skips: \(remaining)")
     },
     onClose: {
         self.dismiss(animated: true)
@@ -195,7 +199,7 @@ present(viewController, animated: true)
 ```swift
 let versionView = VersionUIKitView(
     updateState: updateState,
-    locale: "ru"
+    locale: "en"
 )
 
 versionView.onUpdateTap = {
@@ -203,7 +207,7 @@ versionView.onUpdateTap = {
 }
 
 view.addSubview(versionView)
-// Настройте constraints
+// Setup constraints
 ```
 
 #### ChangelogViewController
@@ -215,38 +219,38 @@ present(changelogVC, animated: true)
 
 ## 🔧 API Reference
 
-### Основные методы
+### Main Methods
 
 #### `checkUpdates() async throws -> UpdateState`
-Главный метод для проверки обновлений. Возвращает `UpdateState` с полной информацией о состоянии обновлений.
+Main method for checking updates. Returns `UpdateState` with complete information about update status.
 
 ```swift
 let updateState = try await Releazio.shared.checkUpdates()
 ```
 
 #### `openAppStore(updateState:) -> Bool`
-Открывает App Store для обновления приложения.
+Opens App Store for app update.
 
 ```swift
 Releazio.shared.openAppStore(updateState: updateState)
 ```
 
 #### `openPostURL(updateState:) -> Bool`
-Открывает URL поста (для type 0 или при клике на кнопку информации).
+Opens post URL (for type 0 or when clicking info button).
 
 ```swift
 Releazio.shared.openPostURL(updateState: updateState)
 ```
 
 #### `markPostAsOpened(postURL:)`
-Отмечает пост как открытый (для type 0, чтобы скрыть бейдж).
+Marks post as opened (for type 0, to hide badge).
 
 ```swift
 Releazio.shared.markPostAsOpened(postURL: postURL)
 ```
 
 #### `markPopupAsShown(version:updateType:)`
-Отмечает попап как показанный (для type 2, 3).
+Marks popup as shown (for type 2, 3).
 
 ```swift
 Releazio.shared.markPopupAsShown(
@@ -256,7 +260,7 @@ Releazio.shared.markPopupAsShown(
 ```
 
 #### `skipUpdate(version:) -> Int`
-Пропускает обновление и возвращает количество оставшихся попыток (для type 3).
+Skips update and returns remaining attempts count (for type 3).
 
 ```swift
 let remaining = Releazio.shared.skipUpdate(version: updateState.currentVersion)
@@ -264,80 +268,80 @@ let remaining = Releazio.shared.skipUpdate(version: updateState.currentVersion)
 
 ### UpdateState
 
-Структура, возвращаемая методом `checkUpdates()`, содержит:
+Structure returned by `checkUpdates()` method contains:
 
-- `updateType: Int` — Тип обновления (0, 1, 2, 3)
-- `shouldShowBadge: Bool` — Показывать ли бейдж (type 0)
-- `shouldShowPopup: Bool` — Показывать ли попап (type 2, 3)
-- `shouldShowUpdateButton: Bool` — Показывать ли кнопку обновления (type 1)
-- `remainingSkipAttempts: Int` — Осталось пропусков (type 3)
-- `channelData: ChannelData` — Полные данные из API
-- `badgeURL: String?` — URL для открытия при клике на бейдж
-- `updateURL: String?` — URL для обновления приложения
-- `currentVersionName: String` — Текущая версия приложения (для отображения)
-- `latestVersionName: String` — Последняя доступная версия (для отображения)
-- `isUpdateAvailable: Bool` — Доступно ли обновление
+- `updateType: Int` — Update type (0, 1, 2, 3)
+- `shouldShowBadge: Bool` — Whether to show badge (type 0)
+- `shouldShowPopup: Bool` — Whether to show popup (type 2, 3)
+- `shouldShowUpdateButton: Bool` — Whether to show update button (type 1)
+- `remainingSkipAttempts: Int` — Remaining skips (type 3)
+- `channelData: ChannelData` — Full data from API
+- `badgeURL: String?` — URL to open when badge is clicked
+- `updateURL: String?` — URL for app update
+- `currentVersionName: String` — Current app version (for display)
+- `latestVersionName: String` — Latest available version (for display)
+- `isUpdateAvailable: Bool` — Whether update is available
 
-## ⚙️ Конфигурация
+## ⚙️ Configuration
 
 ### ReleazioConfiguration
 
 ```swift
 let configuration = ReleazioConfiguration(
-    apiKey: "your-api-key",                      // Обязательно
-    debugLoggingEnabled: false,                   // По умолчанию: false
-    networkTimeout: 30,                          // По умолчанию: 30 секунд
-    analyticsEnabled: true,                       // По умолчанию: true
-    cacheExpirationTime: 3600,                    // По умолчанию: 3600 секунд (1 час)
-    locale: "en",                                 // По умолчанию: "en" (поддерживается "ru")
-    badgeColor: UIColor.systemYellow              // По умолчанию: nil (system yellow)
+    apiKey: "your-api-key",                      // Required
+    debugLoggingEnabled: false,                   // Default: false
+    networkTimeout: 30,                          // Default: 30 seconds
+    analyticsEnabled: true,                       // Default: true
+    cacheExpirationTime: 3600,                    // Default: 3600 seconds (1 hour)
+    locale: "en",                                 // Default: "en" (supports "ru")
+    badgeColor: UIColor.systemYellow              // Default: nil (system yellow)
 )
 ```
 
-### Параметры
+### Parameters
 
-- **apiKey** — API ключ для аутентификации (обязательно)
-- **debugLoggingEnabled** — Включить отладочные логи
-- **networkTimeout** — Таймаут сетевых запросов в секундах
-- **analyticsEnabled** — Включить сбор аналитики
-- **cacheExpirationTime** — Время жизни кэша в секундах
-- **locale** — Локаль для локализации ("en" или "ru")
-- **badgeColor** — Кастомный цвет бейджа (опционально)
+- **apiKey** — API key for authentication (required)
+- **debugLoggingEnabled** — Enable debug logging
+- **networkTimeout** — Network request timeout in seconds
+- **analyticsEnabled** — Enable analytics collection
+- **cacheExpirationTime** — Cache lifetime in seconds
+- **locale** — Locale for localization ("en" or "ru")
+- **badgeColor** — Custom badge color (optional)
 
-## 🌍 Локализация
+## 🌍 Localization
 
-SDK поддерживает два языка:
+The SDK supports two languages:
 
-- **en** — Английский
-- **ru** — Русский
+- **en** — English
+- **ru** — Russian
 
-Локализованные строки:
-- `update.title` — Заголовок попапа обновления
-- `update.message` — Сообщение об обновлении
-- `update.button.update` — Текст кнопки "Обновить"
-- `update.button.skip` — Текст кнопки "Пропустить"
-- `update.button.close` — Текст кнопки "Закрыть"
-- `update.badge.new` — Текст бейджа "Новое"
-- `update.whats.new` — Текст "Что нового"
+Localized strings:
+- `update.title` — Update popup title
+- `update.message` — Update message
+- `update.button.update` — "Update" button text
+- `update.button.skip` — "Skip" button text
+- `update.button.close` — "Close" button text
+- `update.badge.new` — Badge "New" text
+- `update.whats.new` — "What's New" text
 
-## 📖 Документация
+## 📖 Documentation
 
-Подробная документация доступна в следующих файлах:
+Detailed documentation is available in the following files:
 
-- **[API Documentation](./Documentation/API.md)** — Полная справка по API
-- **[Integration Guide](./Documentation/Integration.md)** — Руководство по интеграции
+- **[API Documentation](./Documentation/API.md)** — Complete API reference
+- **[Integration Guide](./Documentation/Integration.md)** — Integration guide
 
-Для генерации документации используйте:
+To generate documentation use:
 
 ```bash
 jazzy --source-directory Sources/Releazio
 ```
 
-## 💡 Примеры использования
+## 💡 Usage Examples
 
-Полный пример интеграции доступен в папке [Examples](./Examples/ReleazioExample/).
+Full integration example is available in the [Examples](./Examples/ReleazioExample/) folder.
 
-### Пример полной интеграции (SwiftUI)
+### Full Integration Example (SwiftUI)
 
 ```swift
 import SwiftUI
@@ -349,13 +353,13 @@ struct ContentView: View {
     
     var body: some View {
         VStack {
-            // Ваш контент
+            // Your content
             
-            // Версия и кнопка обновления
+            // Version and update button
             if let updateState = updateState {
                 VersionView(
                     updateState: updateState,
-                    locale: "ru",
+                    locale: "en",
                     onUpdateTap: {
                         Releazio.shared.openAppStore(updateState: updateState)
                     }
@@ -370,7 +374,7 @@ struct ContentView: View {
                 ReleazioUpdatePromptView(
                     updateState: updateState,
                     style: .native,
-                    locale: "ru",
+                    locale: "en",
                     onUpdate: {
                         Releazio.shared.openAppStore(updateState: updateState)
                     },
@@ -402,45 +406,45 @@ struct ContentView: View {
                 await MainActor.run {
                     updateState = state
                     
-                    // Показываем попап если нужно
+                    // Show popup if needed
                     if state.shouldShowPopup {
                         showUpdatePrompt = true
                     }
                 }
             } catch {
-                print("Ошибка: \(error)")
+                print("Error: \(error)")
             }
         }
     }
 }
 ```
 
-## 🐛 Обработка ошибок
+## 🐛 Error Handling
 
-SDK использует `ReleazioError` для обработки ошибок:
+The SDK uses `ReleazioError` for error handling:
 
 ```swift
 do {
     let updateState = try await Releazio.shared.checkUpdates()
 } catch ReleazioError.configurationMissing {
-    print("SDK не настроен")
+    print("SDK not configured")
 } catch ReleazioError.apiError(let code, let message) {
-    print("API ошибка: \(code) - \(message)")
+    print("API error: \(code) - \(message)")
 } catch {
-    print("Неизвестная ошибка: \(error)")
+    print("Unknown error: \(error)")
 }
 ```
 
-## 🤝 Поддержка
+## 🤝 Support
 
 - 📧 Email: support@releazio.com
 - 🐛 Issues: [GitHub Issues](https://github.com/Releazio/releazio-sdk-ios/issues)
-- 📖 Документация: [Releazio Docs](https://releazio.com/docs)
+- 📖 Documentation: [Releazio Docs](https://releazio.com/docs)
 
-## 📄 Лицензия
+## 📄 License
 
-Releazio iOS SDK доступен под лицензией MIT. Смотрите [LICENSE](LICENSE) для деталей.
+Releazio iOS SDK is available under the MIT license. See [LICENSE](LICENSE) for details.
 
 ---
 
-**Сделано с ❤️ командой Releazio**
+**Made with ❤️ by the Releazio team**

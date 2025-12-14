@@ -7,6 +7,18 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+## [1.0.5] - 2025-01-XX
+
+### Fixed
+- Added skip button in type 3 (popup force) for SwiftUI (both native and InAppUpdate styles) and UIKit
+- Fixed crash in UIKit when skip button constraints were added but button was not added to view
+- Fixed skip attempts count logic - now properly initializes and persists attempts from API
+- Fixed skip attempts reset issue on app restart in type 3 mode
+- Fixed safe area issues in SwiftUI InAppUpdate style (content no longer overlaps safe area)
+
+### Added
+- Added InAppUpdate style support in UIKit (full-screen view with red header, matching SwiftUI implementation)
+
 ## [1.0.4] - 2025-01-XX
 
 ### Changed

@@ -174,11 +174,13 @@ public class UpdateStateManager {
         
         // For type 3: always show (but check skip attempts)
         if channelData.updateType == 3 {
-            // Initialize skip attempts if not set
-            let remaining = storage.getRemainingSkipAttempts(for: version)
-            if remaining == 0 {
-                // Check if this is first time by trying to get a default value
-                // If we get 0 and userDefaults doesn't have the key, initialize
+            // Check if version changed - if so, reset skip attempts for new version
+            if let lastVersion = storage.getLastPopupVersion(), lastVersion != version {
+                // Version changed - clear old data and initialize for new version
+                storage.clearData(for: lastVersion)
+                storage.initializeSkipAttempts(channelData.skipAttempts, for: version)
+            } else {
+                // Same version - initialize skip attempts if not set
                 let key = "releazio_skip_attempts_remaining_\(version)"
                 if userDefaults.object(forKey: key) == nil {
                     storage.initializeSkipAttempts(channelData.skipAttempts, for: version)
@@ -208,6 +210,14 @@ public class UpdateStateManager {
         }
         
         let version = channelData.appVersionCode
+        
+        // Check if skip attempts are initialized for this version
+        let key = "releazio_skip_attempts_remaining_\(version)"
+        if userDefaults.object(forKey: key) == nil {
+            // Not initialized yet - initialize from API value
+            storage.initializeSkipAttempts(channelData.skipAttempts, for: version)
+        }
+        
         return storage.getRemainingSkipAttempts(for: version)
     }
     

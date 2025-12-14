@@ -141,15 +141,6 @@ public struct ReleazioUpdatePromptView: View {
                     .padding(.horizontal, 20)
                     .padding(.bottom, 24)
                 
-                // Skip attempts (for type 3)
-                if updateState.updateType == 3 && remainingSkipAttempts > 0 {
-                    Text(skipRemainingText)
-                        .font(.system(size: 14, weight: .medium))
-                        .foregroundColor(.orange)
-                        .padding(.horizontal, 20)
-                        .padding(.bottom, 16)
-                }
-                
                 // Update button
                 Button(action: {
                     onUpdate?()
@@ -163,18 +154,26 @@ public struct ReleazioUpdatePromptView: View {
                         .cornerRadius(12)
                 }
                 .padding(.horizontal, 20)
-                .padding(.bottom, 12)
+                .padding(.bottom, updateState.updateType == 3 && remainingSkipAttempts > 0 ? 12 : 20)
                 
-                // "Что нового" link (if post_url exists)
-                if updateState.channelData.postUrl != nil {
+                // Skip button (for type 3)
+                if updateState.updateType == 3 && remainingSkipAttempts > 0 {
                     Button(action: {
-                        onInfoTap?()
+                        let newRemaining = remainingSkipAttempts - 1
+                        remainingSkipAttempts = newRemaining
+                        onSkip?(newRemaining)
+                        // "Skip" means close the popup
+                        onClose?()
                     }) {
-                        Text(whatsNewText)
-                            .font(.system(size: 16))
-                            .foregroundColor(linkColor)
-                            .padding(.bottom, 20)
+                        Text(skipButtonText + " (\(remainingSkipAttempts))")
+                            .font(.system(size: 16, weight: .medium))
+                            .foregroundColor(theme.secondaryTextColor)
+                            .frame(maxWidth: .infinity)
+                            .frame(height: 44)
+                            .cornerRadius(12)
                     }
+                    .padding(.horizontal, 20)
+                    .padding(.bottom, 20)
                 }
             }
             .background(theme.backgroundColor)
@@ -187,80 +186,88 @@ public struct ReleazioUpdatePromptView: View {
     // MARK: - InAppUpdate Style (Full Screen)
     
     private func inAppUpdateStyleView(theme: UpdatePromptTheme) -> some View {
+        // Full-screen content area
         VStack(spacing: 0) {
-            // Red header
-            HStack {
-                // Close button
-                if updateState.updateType == 2 {
-                    Button(action: {
-                        onClose?()
-                    }) {
-                        Image(systemName: "xmark")
-                            .font(.system(size: 18, weight: .medium))
-                            .foregroundColor(theme.headerTextColor)
-                            .frame(width: 32, height: 32)
+            // Header with safe area
+            VStack(spacing: 0) {
+                HStack {
+                    // Close button (only for type 2)
+                    if updateState.updateType == 2 {
+                        Button(action: {
+                            onClose?()
+                        }) {
+                            Image(systemName: "xmark")
+                                .font(.system(size: 20, weight: .medium))
+                                .foregroundColor(theme.closeButtonColor)
+                                .frame(width: 24, height: 24)
+                        }
                     }
-                } else {
-                    Spacer()
-                        .frame(width: 32, height: 32)
-                }
-                
-                Spacer()
-                
-                // Title
-                VStack(spacing: 4) {
-                    Text(updateTitle)
-                        .font(.system(size: 18, weight: .semibold))
-                        .foregroundColor(theme.headerTextColor)
                     
-                    // Version info
-                    Text("\(updateState.currentVersion) → \(updateState.latestVersion)")
-                        .font(.system(size: 14))
-                        .foregroundColor(theme.headerTextColor.opacity(0.9))
+                    Spacer()
                 }
+                .padding(.horizontal, 20)
+                .padding(.top, 20)
+                .padding(.bottom, 16)
+            }
+            .background(theme.headerBackgroundColor)
+            
+            Spacer()
+            
+            VStack(alignment: .center, spacing: 20) {
+                Text(updateTitle)
+                    .font(.system(size: 20, weight: .bold))
+                    .foregroundColor(theme.textColor)
+                    .multilineTextAlignment(.center)
                 
-                Spacer()
-                
-                // Update button in header
+                // Message
+                Text(updateState.channelData.updateMessage.isEmpty ? updateMessage : updateState.channelData.updateMessage)
+                    .font(.system(size: 16, weight: .semibold))
+                    .foregroundColor(theme.secondaryTextColor)
+                    .frame(maxWidth: 400)
+                    .multilineTextAlignment(.center)
+                    .padding(.horizontal, 20)
+                    .padding(.bottom, 24)
+            }
+            
+            // Buttons at bottom
+            VStack(spacing: 12) {
+                // Update button
                 Button(action: {
                     onUpdate?()
                 }) {
                     Text(updateButtonText)
-                        .font(.system(size: 16, weight: .semibold))
+                        .font(.system(size: 18, weight: .semibold))
                         .foregroundColor(updateButtonTextColor)
-                        .padding(.horizontal, 16)
-                        .padding(.vertical, 8)
+                        .frame(maxWidth: 300)
+                        .frame(height: 56)
                         .background(updateButtonColor)
-                        .cornerRadius(8)
+                        .cornerRadius(14)
                 }
-            }
-            .padding(.horizontal, 16)
-            .padding(.vertical, 12)
-            .frame(maxWidth: .infinity)
-            .background(theme.headerBackgroundColor)
-            
-            // Content area
-            ScrollView {
-                VStack(alignment: .leading, spacing: 16) {
-                    // Message
-                    Text(updateState.channelData.updateMessage.isEmpty ? updateMessage : updateState.channelData.updateMessage)
-                        .font(.system(size: 16))
-                        .foregroundColor(theme.textColor)
-                        .lineSpacing(4)
-                    
-                    // Skip attempts (for type 3)
-                    if updateState.updateType == 3 && remainingSkipAttempts > 0 {
-                        Text(skipRemainingText)
-                            .font(.system(size: 14, weight: .medium))
-                            .foregroundColor(.orange)
-                            .padding(.top, 8)
+                
+                // Skip button (for type 3)
+                if updateState.updateType == 3 && remainingSkipAttempts > 0 {
+                    Button(action: {
+                        let newRemaining = remainingSkipAttempts - 1
+                        remainingSkipAttempts = newRemaining
+                        onSkip?(newRemaining)
+                        // "Skip" means close the popup
+                        onClose?()
+                    }) {
+                        Text(skipButtonText + " (\(remainingSkipAttempts))")
+                            .font(.system(size: 16, weight: .medium))
+                            .foregroundColor(theme.textColor.opacity(0.6))
+                            .frame(maxWidth: 300)
+                            .frame(height: 44)
                     }
                 }
-                .padding(20)
             }
-            .background(theme.backgroundColor)
+            .padding(.horizontal, 40)
+            .padding(.bottom, 40)
+            
+            Spacer()
         }
-        .ignoresSafeArea(.all, edges: .top)
+        .frame(maxWidth: .infinity, maxHeight: .infinity)
+        .background(theme.backgroundColor)
     }
     
     // MARK: - Computed Properties for Custom Strings and Colors
