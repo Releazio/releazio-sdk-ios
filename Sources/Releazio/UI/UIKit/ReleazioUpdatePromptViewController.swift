@@ -369,13 +369,17 @@ public class ReleazioUpdatePromptViewController: UIViewController {
     }
     
     @objc private func skipTapped() {
-        let newRemaining = remainingSkipAttempts - 1
-        remainingSkipAttempts = newRemaining
+        let currentRemaining = remainingSkipAttempts
+        onSkip?(currentRemaining)
+    }
+    
+    public func updateRemainingSkipAttempts(_ newValue: Int) {
+        remainingSkipAttempts = newValue
         updateUI()
-        onSkip?(newRemaining)
         
-        // "Skip" means close the popup
-        dismiss(animated: true)
+        if newValue == 0 {
+            dismiss(animated: true)
+        }
     }
 }
 
