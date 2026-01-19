@@ -219,20 +219,15 @@ public class ReleazioUpdatePromptViewController: UIViewController {
         view.addSubview(overlayView)
         view.addSubview(containerView)
         
-        // Header
-        // Info button (if post URL exists) - слева
         if updateState.channelData.postUrl != nil {
             headerStackView.addArrangedSubview(infoButton)
         }
-        headerStackView.addArrangedSubview(UIView()) // Spacer
-        // Title - по центру
+        headerStackView.addArrangedSubview(UIView())
         headerStackView.addArrangedSubview(titleLabel)
-        headerStackView.addArrangedSubview(UIView()) // Spacer
-        // Close button (only for type 2) - справа
+        headerStackView.addArrangedSubview(UIView())
         if updateState.updateType == 2 {
             headerStackView.addArrangedSubview(closeButton)
         } else if updateState.channelData.postUrl == nil {
-            // Spacer справа, если нет ни close button, ни info button
             headerStackView.addArrangedSubview(UIView())
         }
         containerView.addSubview(headerStackView)
@@ -295,6 +290,8 @@ public class ReleazioUpdatePromptViewController: UIViewController {
         }
         
         NSLayoutConstraint.activate(constraints)
+        
+        titleLabel.centerXAnchor.constraint(equalTo: headerStackView.centerXAnchor).isActive = true
     }
     
     private func updateUI() {
