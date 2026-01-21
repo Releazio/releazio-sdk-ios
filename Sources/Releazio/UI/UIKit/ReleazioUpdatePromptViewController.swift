@@ -182,6 +182,10 @@ public class ReleazioUpdatePromptViewController: UIViewController {
         self.remainingSkipAttempts = updateState.remainingSkipAttempts
         super.init(nibName: nil, bundle: nil)
         modalPresentationStyle = .overFullScreen
+        
+        if updateState.updateType == 3 {
+            isModalInPresentation = true
+        }
     }
     
     required init?(coder: NSCoder) {
@@ -219,20 +223,15 @@ public class ReleazioUpdatePromptViewController: UIViewController {
         view.addSubview(overlayView)
         view.addSubview(containerView)
         
-        // Header
-        // Info button (if post URL exists) - слева
         if updateState.channelData.postUrl != nil {
             headerStackView.addArrangedSubview(infoButton)
         }
-        headerStackView.addArrangedSubview(UIView()) // Spacer
-        // Title - по центру
+        headerStackView.addArrangedSubview(UIView())
         headerStackView.addArrangedSubview(titleLabel)
-        headerStackView.addArrangedSubview(UIView()) // Spacer
-        // Close button (only for type 2) - справа
+        headerStackView.addArrangedSubview(UIView())
         if updateState.updateType == 2 {
             headerStackView.addArrangedSubview(closeButton)
         } else if updateState.channelData.postUrl == nil {
-            // Spacer справа, если нет ни close button, ни info button
             headerStackView.addArrangedSubview(UIView())
         }
         containerView.addSubview(headerStackView)
@@ -295,6 +294,10 @@ public class ReleazioUpdatePromptViewController: UIViewController {
         }
         
         NSLayoutConstraint.activate(constraints)
+        
+        let titleCenterConstraint = titleLabel.centerXAnchor.constraint(equalTo: headerStackView.centerXAnchor)
+        titleCenterConstraint.priority = .defaultHigh
+        titleCenterConstraint.isActive = true
     }
     
     private func updateUI() {
@@ -370,13 +373,17 @@ public class ReleazioUpdatePromptViewController: UIViewController {
     }
     
     @objc private func skipTapped() {
-        let newRemaining = remainingSkipAttempts - 1
-        remainingSkipAttempts = newRemaining
+        let currentRemaining = remainingSkipAttempts
+        onSkip?(currentRemaining)
+    }
+    
+    public func updateRemainingSkipAttempts(_ newValue: Int) {
+        remainingSkipAttempts = newValue
         updateUI()
-        onSkip?(newRemaining)
         
-        // "Skip" means close the popup
-        dismiss(animated: true)
+        if newValue == 0 {
+            dismiss(animated: true)
+        }
     }
 }
 
