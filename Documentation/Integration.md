@@ -778,6 +778,9 @@ private func configureReleazio() {
         locale: "ru"
     )
     Releazio.configure(with: config)
+    // Note: configure() automatically calls init() in the background
+    // to send device info to server for API request statistics.
+    // This happens asynchronously and doesn't block initialization.
 }
 ```
 

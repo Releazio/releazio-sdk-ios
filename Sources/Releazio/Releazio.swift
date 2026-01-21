@@ -49,6 +49,18 @@ public class Releazio {
 
         // Track SDK initialization
         shared.analyticsService.trackEvent(.sdkInitialized)
+        
+        // Call sendDeviceInit() to send device info to server (fire-and-forget)
+        Task {
+            do {
+                try await shared.releaseService.sendDeviceInit()
+            } catch {
+                // Log error, but don't interrupt initialization
+                if configuration.debugLoggingEnabled {
+                    print("⚠️ Failed to call sendDeviceInit: \(error)")
+                }
+            }
+        }
     }
 
     /// Check for available updates

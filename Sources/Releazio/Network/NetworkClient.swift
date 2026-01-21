@@ -11,6 +11,7 @@ import Foundation
 public protocol NetworkClientProtocol {
     func request<T: Codable>(_ request: APIRequest) async throws -> T
     func requestWithPagination<T: Codable>(_ request: APIRequest) async throws -> (data: [T], pagination: PaginationInfo?)
+    func requestEmpty(_ request: APIRequest) async throws
 }
 
 /// Network client for making API requests
@@ -58,6 +59,71 @@ public class NetworkClient: NetworkClientProtocol {
     public func requestWithPagination<T: Codable>(_ request: APIRequest) async throws -> (data: [T], pagination: PaginationInfo?) {
         let response: ArrayAPIResponse<T> = try await executeRequest(request)
         return (response.data ?? [], response.meta?.pagination)
+    }
+    
+    /// Make a request expecting empty response (200 OK with no body)
+    /// - Parameter request: API request configuration
+    /// - Throws: ReleazioError
+    public func requestEmpty(_ request: APIRequest) async throws {
+        var urlRequest = URLRequest(url: request.url)
+        urlRequest.httpMethod = request.method.rawValue
+        urlRequest.timeoutInterval = request.timeout
+        
+        // Add headers
+        for (key, value) in request.headers {
+            urlRequest.setValue(value, forHTTPHeaderField: key)
+        }
+        
+        // Add body if present
+        if let body = request.body {
+            urlRequest.httpBody = body
+            urlRequest.setValue("application/json", forHTTPHeaderField: "Content-Type")
+        }
+        
+        do {
+            let (data, response) = try await session.data(for: urlRequest)
+            
+            // Validate response (but allow empty body)
+            guard let httpResponse = response as? HTTPURLResponse else {
+                throw ReleazioError.invalidResponse
+            }
+            
+            // Check status code
+            switch httpResponse.statusCode {
+            case 200...299:
+                break // Success - empty body is OK
+            case 401:
+                throw ReleazioError.invalidApiKey
+            case 403:
+                throw ReleazioError.apiError(code: "FORBIDDEN", message: "Access forbidden")
+            case 404:
+                throw ReleazioError.apiError(code: "NOT_FOUND", message: "Resource not found")
+            case 429:
+                let retryAfter = httpResponse.value(forHTTPHeaderField: "Retry-After")
+                    .flatMap(Int.init)
+                    .map(TimeInterval.init)
+                throw ReleazioError.rateLimitExceeded(retryAfter: retryAfter)
+            case 500...599:
+                let message = String(data: data, encoding: .utf8)
+                throw ReleazioError.serverError(statusCode: httpResponse.statusCode, message: message)
+            default:
+                let message = String(data: data, encoding: .utf8)
+                throw ReleazioError.apiError(code: "HTTP_ERROR", message: message)
+            }
+            
+            // Empty response is acceptable
+        } catch {
+            var responseData: Data?
+            var urlResponse: URLResponse?
+            
+            // Try to extract data and response from the error if possible
+            if error is URLError {
+                responseData = nil
+                urlResponse = nil
+            }
+            
+            throw processError(error, response: urlResponse, data: responseData)
+        }
     }
 
     // MARK: - Private Methods

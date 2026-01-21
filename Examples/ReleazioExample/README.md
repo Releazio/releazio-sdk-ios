@@ -43,13 +43,15 @@ let apiKey = "your-api-key-here"
 
 ```swift
 let configuration = ReleazioConfiguration(
-    apiKey: apiKey,
+    apiKey: "your-api-key",
     debugLoggingEnabled: true,
     locale: "ru"  // или "en"
 )
 
 Releazio.configure(with: configuration)
 ```
+
+SDK автоматически соберет всю информацию об устройстве и отправит её на сервер.
 
 ### ContentView.swift
 
@@ -264,14 +266,15 @@ if let state = updateState {
 
 ```swift
 ReleazioConfiguration(
-    apiKey: apiKey,
-    debugLoggingEnabled: true,      // Включены логи для отладки
-    networkTimeout: 30,             // Таймаут 30 секунд
-    analyticsEnabled: true,          // Включена аналитика
-    cacheExpirationTime: 3600,       // Кэш на 1 час
-    locale: "ru"                     // Русская локализация
+    apiKey: "your-api-key",
+    debugLoggingEnabled: true,
+    locale: "ru"
 )
+
+Releazio.configure(with: configuration)
 ```
+
+SDK автоматически соберет информацию об устройстве и отправит её на сервер.
 
 ## 🌍 Локализация
 

@@ -27,23 +27,17 @@ struct ReleazioExampleApp: App {
     // MARK: - Private Methods
 
     private func configureReleazioSDK() {
-        let apiKey = "Your API key here"
-
-        // Create configuration
+        // Auto-detect device locale
+        let deviceLocale = Locale.current.language.languageCode?.identifier ?? "en"
+        let sdkLocale = (deviceLocale == "ru") ? "ru" : "en"
+        
         let configuration = ReleazioConfiguration(
-            apiKey: apiKey,
+            apiKey: "Your API key here",
             debugLoggingEnabled: true,
-            networkTimeout: 30,
-            analyticsEnabled: true,
-            cacheExpirationTime: 3600,
-            locale: "ru"
+            locale: sdkLocale
         )
 
-        // Configure SDK
         Releazio.configure(with: configuration)
-
-        print("✅ Releazio SDK configured successfully")
-        print("🔑 API Key: \(apiKey.prefix(10))...")
     }
 }
 

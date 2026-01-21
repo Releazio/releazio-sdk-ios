@@ -78,12 +78,21 @@ public enum APIEndpoints {
         
         return components.url ?? baseURL
     }
+    
+    /// Device initialization endpoint
+    /// - Returns: Endpoint URL for /init
+    public static func initEndpoint() -> URL {
+        var components = URLComponents(url: baseURL, resolvingAgainstBaseURL: false)!
+        components.path = "/init"
+        return components.url ?? baseURL
+    }
 }
 
 // MARK: - HTTP Methods
 
 public enum HTTPMethod: String {
     case GET = "GET"
+    case POST = "POST"
 }
 
 // MARK: - Request Builder
@@ -130,6 +139,28 @@ extension APIRequest {
             url: url,
             method: .GET,
             headers: headers,
+            timeout: timeout
+        )
+    }
+    
+    /// Create POST request with JSON body
+    /// - Parameters:
+    ///   - url: URL
+    ///   - body: JSON body data
+    ///   - headers: Additional headers
+    ///   - timeout: Request timeout
+    /// - Returns: APIRequest
+    public static func post(
+        url: URL,
+        body: Data?,
+        headers: [String: String] = [:],
+        timeout: TimeInterval = 30
+    ) -> APIRequest {
+        return APIRequest(
+            url: url,
+            method: .POST,
+            headers: headers,
+            body: body,
             timeout: timeout
         )
     }

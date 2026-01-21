@@ -65,6 +65,9 @@ struct YourApp: App {
         )
         
         Releazio.configure(with: configuration)
+        // Примечание: configure() автоматически вызывает init() в фоне
+        // для отправки информации об устройстве (размеры экрана, timezone, device ID и т.д.)
+        // на сервер для статистики API запросов.
     }
     
     var body: some Scene {

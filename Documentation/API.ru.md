@@ -40,6 +40,8 @@ public static func configure(with configuration: ReleazioConfiguration)
 **Параметры:**
 - `configuration`: Объект `ReleazioConfiguration` с API ключом и настройками
 
+**Примечание:** Этот метод автоматически вызывает `init()` в фоне для отправки информации об устройстве на сервер для статистики API запросов. Это включает device ID, размеры экрана, timezone, версию ОС и другие данные об устройстве. Ошибки при `init()` логируются (если `debugLoggingEnabled` равен `true`), но не прерывают процесс инициализации SDK.
+
 **Пример:**
 ```swift
 let config = ReleazioConfiguration(
@@ -48,6 +50,7 @@ let config = ReleazioConfiguration(
     debugLoggingEnabled: true
 )
 Releazio.configure(with: config)
+// Информация об устройстве автоматически отправляется на сервер в фоне
 ```
 
 ##### `checkUpdates()`

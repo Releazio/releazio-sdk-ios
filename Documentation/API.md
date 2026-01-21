@@ -40,6 +40,8 @@ public static func configure(with configuration: ReleazioConfiguration)
 **Parameters:**
 - `configuration`: `ReleazioConfiguration` object with API key and settings
 
+**Note:** This method automatically calls `init()` in the background to send device information to the server for API request statistics. This includes device ID, screen dimensions, timezone, OS version, and other device-specific data. Errors during `init()` are logged (if `debugLoggingEnabled` is `true`) but do not interrupt the SDK initialization process.
+
 **Example:**
 ```swift
 let config = ReleazioConfiguration(
@@ -48,6 +50,7 @@ let config = ReleazioConfiguration(
     debugLoggingEnabled: true
 )
 Releazio.configure(with: config)
+// Device info is automatically sent to server in the background
 ```
 
 ##### `checkUpdates()`

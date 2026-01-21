@@ -20,6 +20,7 @@ public protocol NetworkManagerProtocol {
     func checkForUpdates(currentVersion: String) async throws -> UpdateCheckResponse
     func trackEvent(event: AnalyticsEvent) async throws
     func validateAPIKey() async throws -> Bool
+    func sendDeviceInit() async throws
 }
 
 /// Network manager for coordinating API requests
@@ -246,6 +247,92 @@ public class NetworkManager: NetworkManagerProtocol {
         }
     }
 
+    /// Send device initialization request to server (POST /init)
+    /// - Throws: ReleazioError if network request fails
+    public func sendDeviceInit() async throws {
+        // Collect all device information
+        let channel = "appstore" // iOS always uses App Store
+        let appId = Bundle.main.bundleIdentifier
+        let appVersionCode = Bundle.main.buildVersion
+        let appVersionName = Bundle.main.appVersion?.versionString
+        let osType = "ios"
+        let region = Locale.current.regionCode
+        let marketPackages: String? = nil // Not applicable for iOS
+        let locale = Locale.current.languageCode
+        let osVersionCode = String(ProcessInfo.processInfo.operatingSystemVersion.majorVersion)
+        let deviceManufacturer = "Apple"
+        let deviceBrand = "Apple"
+        
+        #if canImport(UIKit)
+        let deviceModel = UIDevice.current.model
+        let deviceId = UIDevice.current.identifierForVendor?.uuidString
+        
+        // Get screen dimensions
+        let screen = UIScreen.main
+        let screenWidth = Int(screen.bounds.width)
+        let screenHeight = Int(screen.bounds.height)
+        let screenScale = Int(screen.scale)
+        
+        // Check if running on simulator
+        #if targetEnvironment(simulator)
+        let isEmulator = true
+        #else
+        let isEmulator = false
+        #endif
+        #else
+        let deviceModel: String? = nil
+        let deviceId: String? = nil
+        let screenWidth: Int? = nil
+        let screenHeight: Int? = nil
+        let screenScale: Int? = nil
+        let isEmulator: Bool? = nil
+        #endif
+        
+        let timezone = TimeZone.current.identifier
+        let sdkVersion = "1.0.9" // SDK version
+        let osApiLevel: String? = nil // Not applicable for iOS
+        
+        // Create InitRequest
+        let initRequest = InitRequest(
+            channel: channel,
+            appId: appId,
+            appVersionCode: appVersionCode,
+            appVersionName: appVersionName,
+            osType: osType,
+            region: region,
+            marketPackages: marketPackages,
+            locale: locale,
+            osVersionCode: osVersionCode,
+            deviceManufacturer: deviceManufacturer,
+            deviceBrand: deviceBrand,
+            deviceModel: deviceModel,
+            sdkVersion: sdkVersion,
+            osApiLevel: osApiLevel,
+            timezone: timezone,
+            deviceId: deviceId,
+            screenWidth: screenWidth,
+            screenHeight: screenHeight,
+            screenScale: screenScale,
+            isEmulator: isEmulator
+        )
+        
+        // Encode to JSON
+        let encoder = JSONEncoder()
+        let jsonData = try encoder.encode(initRequest)
+        
+        // Create POST request
+        let endpoint = APIEndpoints.initEndpoint()
+        let request = APIRequest.post(
+            url: endpoint,
+            body: jsonData,
+            headers: defaultHeaders(),
+            timeout: configuration.networkTimeout
+        )
+        
+        // Send request (response may be empty 200 OK)
+        try await networkClient.requestEmpty(request)
+    }
+    
     /// Validate API key
     /// - Returns: True if API key is valid
     /// - Throws: ReleazioError if network request fails

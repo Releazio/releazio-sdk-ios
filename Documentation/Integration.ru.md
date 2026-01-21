@@ -68,6 +68,9 @@ struct YourApp: App {
         )
         
         Releazio.configure(with: configuration)
+        // Примечание: configure() автоматически вызывает init() в фоне
+        // для отправки информации об устройстве на сервер для статистики API запросов.
+        // Это происходит асинхронно и не блокирует инициализацию.
     }
     
     var body: some Scene {

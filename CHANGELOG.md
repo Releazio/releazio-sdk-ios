@@ -7,6 +7,20 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+## [1.0.9] - 2026-01-21
+
+### Added
+- Automatic call to `init()` method when `Releazio.configure()` is called
+- Device information is automatically sent to server for API request statistics
+- POST request support in NetworkManager
+- `InitRequest` model for device initialization
+- `requestEmpty()` method in NetworkClient for handling empty responses (200 OK with no body)
+
+### Changed
+- `configure()` method now automatically sends device information to server during SDK initialization
+- Device info includes: screen dimensions, timezone, device ID, OS version, device model, and emulator status
+- Errors during `init()` are logged (if `debugLoggingEnabled` is `true`) but do not interrupt SDK initialization process
+
 ## [1.0.5] - 2025-01-XX
 
 ### Fixed

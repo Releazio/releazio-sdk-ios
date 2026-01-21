@@ -16,6 +16,7 @@ public protocol ReleaseServiceProtocol {
     func checkForUpdates(currentVersion: String) async throws -> UpdateCheckResponse
     func getUpdateInfo(currentVersion: String) async throws -> UpdateInfo
     func clearCache() async
+    func sendDeviceInit() async throws
 }
 
 /// Service for managing app releases and updates
@@ -271,6 +272,15 @@ public class ReleaseService: ReleaseServiceProtocol {
             throw ReleazioError.configurationMissing
         }
         return try await networkManager.getConfig()
+    }
+    
+    /// Send device initialization request to server (POST /init)
+    /// - Throws: ReleazioError
+    public func sendDeviceInit() async throws {
+        guard let networkManager = networkManager else {
+            throw ReleazioError.configurationMissing
+        }
+        try await networkManager.sendDeviceInit()
     }
 
     /// Get update information for UI display
