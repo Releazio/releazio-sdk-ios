@@ -7,6 +7,17 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+## [1.1.0] - 2026-09-26
+
+### Added
+- `ReleazioConfiguration(apiKey:locale:debugLoggingEnabled:badgeColor:)` initializer, so the integration snippet from the Releazio dashboard compiles as is
+- `os_type=ios` query parameter in the config request (supported by the API since 1.3.x)
+
+### Fixed
+- Device init (`POST /init`) no longer fails with 400 for long timezones (e.g. `America/Argentina/Buenos_Aires`), bundle IDs longer than 30 characters or 3-letter language codes: values exceeding API limits are omitted
+- `sdk_version` sent to the server now reports the actual SDK version
+- README examples for `BadgeView`, `VersionView` and `ReleazioUpdatePromptView` now match the public API
+
 ## [1.0.9] - 2026-01-21
 
 ### Added

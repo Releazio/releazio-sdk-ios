@@ -74,6 +74,7 @@ public class NetworkManager: NetworkManagerProtocol {
         
         let endpoint = APIEndpoints.getConfig(
             channel: channel,
+            osType: "ios",
             appId: appId,
             appVersionCode: appVersionCode,
             appVersionName: appVersionName,
@@ -264,7 +265,7 @@ public class NetworkManager: NetworkManagerProtocol {
         let deviceBrand = "Apple"
         
         #if canImport(UIKit)
-        let deviceModel = UIDevice.current.model
+        let deviceModel: String? = UIDevice.current.model
         let deviceId = UIDevice.current.identifierForVendor?.uuidString
         
         // Get screen dimensions
@@ -289,27 +290,27 @@ public class NetworkManager: NetworkManagerProtocol {
         #endif
         
         let timezone = TimeZone.current.identifier
-        let sdkVersion = "1.0.9" // SDK version
+        let sdkVersion = "1.1.0" // SDK version
         let osApiLevel: String? = nil // Not applicable for iOS
-        
-        // Create InitRequest
+
+        // Values longer than the server limits are omitted, otherwise the whole request is rejected with 400
         let initRequest = InitRequest(
             channel: channel,
-            appId: appId,
-            appVersionCode: appVersionCode,
-            appVersionName: appVersionName,
+            appId: appId?.withinLimit(30),
+            appVersionCode: appVersionCode?.withinLimit(20),
+            appVersionName: appVersionName?.withinLimit(20),
             osType: osType,
-            region: region,
+            region: region?.withinLimit(2),
             marketPackages: marketPackages,
-            locale: locale,
-            osVersionCode: osVersionCode,
+            locale: locale?.withinLimit(2),
+            osVersionCode: osVersionCode.withinLimit(12),
             deviceManufacturer: deviceManufacturer,
             deviceBrand: deviceBrand,
-            deviceModel: deviceModel,
+            deviceModel: deviceModel?.withinLimit(20),
             sdkVersion: sdkVersion,
             osApiLevel: osApiLevel,
-            timezone: timezone,
-            deviceId: deviceId,
+            timezone: timezone.withinLimit(20),
+            deviceId: deviceId?.withinLimit(60),
             screenWidth: screenWidth,
             screenHeight: screenHeight,
             screenScale: screenScale,
@@ -409,6 +410,14 @@ public class NetworkManager: NetworkManagerProtocol {
             }
             throw error
         }
+    }
+}
+
+// MARK: - String Limits
+
+private extension String {
+    func withinLimit(_ maxLength: Int) -> String? {
+        count <= maxLength ? self : nil
     }
 }
 

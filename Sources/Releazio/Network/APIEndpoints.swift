@@ -20,6 +20,7 @@ public enum APIEndpoints {
     /// Get application configuration and releases
     /// - Parameters:
     ///   - channel: Distribution channel (e.g., "appstore")
+    ///   - osType: Operating system type (e.g., "ios")
     ///   - appId: Application bundle identifier
     ///   - appVersionCode: Application build version (CFBundleVersion)
     ///   - appVersionName: Application version name (CFBundleShortVersionString)
@@ -32,6 +33,7 @@ public enum APIEndpoints {
     /// - Returns: Endpoint URL with query parameters
     public static func getConfig(
         channel: String,
+        osType: String? = nil,
         appId: String?,
         appVersionCode: String?,
         appVersionName: String?,
@@ -50,6 +52,9 @@ public enum APIEndpoints {
         queryItems.append(URLQueryItem(name: "channel", value: channel))
         
         // Optional parameters - only add if not nil
+        if let osType = osType {
+            queryItems.append(URLQueryItem(name: "os_type", value: osType))
+        }
         if let appId = appId {
             queryItems.append(URLQueryItem(name: "app_id", value: appId))
         }

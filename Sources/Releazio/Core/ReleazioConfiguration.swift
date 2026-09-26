@@ -13,6 +13,12 @@ import UIKit
 /// Configuration object for Releazio SDK
 public struct ReleazioConfiguration {
 
+    #if canImport(UIKit)
+    public typealias BadgeColor = UIColor
+    #else
+    public typealias BadgeColor = Any
+    #endif
+
     // MARK: - Properties
 
     /// API key for authentication with Releazio API
@@ -35,12 +41,7 @@ public struct ReleazioConfiguration {
     public let locale: String
     
     /// Badge color for update indicator (optional, default: system yellow)
-    #if canImport(UIKit)
-    public let badgeColor: UIColor?
-    #else
-    // For platforms without UIKit, store as Any (not used)
-    public let badgeColor: Any?
-    #endif
+    public let badgeColor: BadgeColor?
 
     // MARK: - Initialization
 
@@ -53,7 +54,6 @@ public struct ReleazioConfiguration {
     ///   - cacheExpirationTime: Cache expiration time in seconds (default: 3600)
     ///   - locale: Locale identifier (default: "en", supported: "en", "ru")
     ///   - badgeColor: Custom badge color (optional, default: system yellow)
-    #if canImport(UIKit)
     public init(
         apiKey: String,
         debugLoggingEnabled: Bool = false,
@@ -61,7 +61,7 @@ public struct ReleazioConfiguration {
         analyticsEnabled: Bool = true,
         cacheExpirationTime: TimeInterval = 3600,
         locale: String = "en",
-        badgeColor: UIColor? = nil
+        badgeColor: BadgeColor? = nil
     ) {
         self.apiKey = apiKey
         self.debugLoggingEnabled = debugLoggingEnabled
@@ -71,25 +71,27 @@ public struct ReleazioConfiguration {
         self.locale = locale
         self.badgeColor = badgeColor
     }
-    #else
+
+    /// Initialize configuration with `locale` passed before `debugLoggingEnabled`,
+    /// matching the integration snippet shown in the Releazio dashboard
+    /// - Parameters:
+    ///   - apiKey: API key for authentication
+    ///   - locale: Locale identifier (supported: "en", "ru")
+    ///   - debugLoggingEnabled: Enable debug logging
+    ///   - badgeColor: Custom badge color (optional, default: system yellow)
     public init(
         apiKey: String,
-        debugLoggingEnabled: Bool = false,
-        networkTimeout: TimeInterval = 30,
-        analyticsEnabled: Bool = true,
-        cacheExpirationTime: TimeInterval = 3600,
-        locale: String = "en",
-        badgeColor: Any? = nil
+        locale: String,
+        debugLoggingEnabled: Bool,
+        badgeColor: BadgeColor? = nil
     ) {
-        self.apiKey = apiKey
-        self.debugLoggingEnabled = debugLoggingEnabled
-        self.networkTimeout = networkTimeout
-        self.analyticsEnabled = analyticsEnabled
-        self.cacheExpirationTime = cacheExpirationTime
-        self.locale = locale
-        self.badgeColor = badgeColor
+        self.init(
+            apiKey: apiKey,
+            debugLoggingEnabled: debugLoggingEnabled,
+            locale: locale,
+            badgeColor: badgeColor
+        )
     }
-    #endif
 
     // MARK: - Validation
 

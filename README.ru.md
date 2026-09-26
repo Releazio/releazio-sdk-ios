@@ -124,8 +124,7 @@ SDK поддерживает 4 типа обновлений в соответс
 ```swift
 ReleazioUpdatePromptView(
     updateState: updateState,
-    style: .native
-    locale: "ru",
+    style: .native,
     onUpdate: {
         Releazio.shared.openAppStore(updateState: updateState)
     },
@@ -192,9 +191,11 @@ VersionView(
 
 ```swift
 BadgeView(
-    text: localization.badgeNewText,
-    backgroundColor: .yellow,
-    textColor: .black
+    color: .yellow,
+    size: 12,
+    onTap: {
+        Releazio.shared.openPostURL(updateState: updateState)
+    }
 )
 ```
 
@@ -212,7 +213,7 @@ ChangelogView(changelog: changelog)
 ```swift
 let viewController = ReleazioUpdatePromptViewController(
     updateState: updateState,
-    style: .native
+    style: .native,
     onUpdate: {
         Releazio.shared.openAppStore(updateState: updateState)
     },
@@ -407,7 +408,6 @@ struct ContentView: View {
             if let updateState = updateState {
                 VersionView(
                     updateState: updateState,
-                    locale: "ru",
                     onUpdateTap: {
                         Releazio.shared.openAppStore(updateState: updateState)
                     }
@@ -422,7 +422,6 @@ struct ContentView: View {
                 ReleazioUpdatePromptView(
                     updateState: updateState,
                     style: .native,
-                    locale: "ru",
                     onUpdate: {
                         Releazio.shared.openAppStore(updateState: updateState)
                     },

@@ -190,9 +190,11 @@ Badge indicator for new updates.
 
 ```swift
 BadgeView(
-    text: localization.badgeNewText,
-    backgroundColor: .yellow,
-    textColor: .black
+    color: .yellow,
+    size: 12,
+    onTap: {
+        Releazio.shared.openPostURL(updateState: updateState)
+    }
 )
 ```
 
@@ -404,7 +406,6 @@ struct ContentView: View {
             if let updateState = updateState {
                 VersionView(
                     updateState: updateState,
-                    locale: "en",
                     onUpdateTap: {
                         Releazio.shared.openAppStore(updateState: updateState)
                     }
@@ -419,7 +420,6 @@ struct ContentView: View {
                 ReleazioUpdatePromptView(
                     updateState: updateState,
                     style: .native,
-                    locale: "en",
                     onUpdate: {
                         Releazio.shared.openAppStore(updateState: updateState)
                     },
